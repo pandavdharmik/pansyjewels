@@ -32,7 +32,7 @@ export default function Home() {
     <div className="pj-shell pj-hero__grid">
 
       <div className="pj-hero__content">
-        <span className="pj-eyebrow" data-reveal="">Fine Jewellery Atelier · Est. 1998</span>
+        <span className="pj-eyebrow" data-reveal="">Fine Jewellery Atelier · Est. 2010</span>
 
         <h1 className="pj-hero__title pj-lines" data-lines="">
           <span className="line"><span>Where Every</span></span>
