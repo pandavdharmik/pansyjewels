@@ -1006,22 +1006,22 @@ body:not([data-page="home"]) .pj-header.is-stuck {
   inset: -8%;
   z-index: 0;
 }
-.pj-hero__bg img {
+.pj-hero__bg video {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: .34;
-  filter: saturate(.85) contrast(1.05);
   will-change: transform;
 }
+/* Dark overlay over the video: even tint, a touch heavier behind the copy. */
 .pj-hero__veil {
   position: absolute;
   inset: 0;
   z-index: 1;
   background:
-    radial-gradient(70% 55% at 76% 42%, rgba(201, 166, 107, .2), transparent 62%),
-    linear-gradient(95deg, rgba(8, 8, 10, .94) 8%, rgba(8, 8, 10, .74) 42%, rgba(8, 8, 10, .3) 78%),
-    linear-gradient(0deg, rgba(8, 8, 10, .92), transparent 45%);
+    linear-gradient(95deg, rgba(8, 8, 10, .45) 10%, rgba(8, 8, 10, .15) 60%, transparent 90%),
+    linear-gradient(0deg, rgba(8, 8, 10, .7), transparent 40%),
+    rgba(8, 8, 10, .5);
 }
 /* Slow gold light sweep across the hero */
 .pj-hero__sweep {
@@ -1098,68 +1098,63 @@ body:not([data-page="home"]) .pj-header.is-stuck {
   margin-top: .65rem;
 }
 
-/* Hero jewellery visual — 3D tilt stage */
+/* Hero jewellery visual — bento collage */
 .pj-hero__stage {
   position: relative;
-  perspective: 1400px;
-  aspect-ratio: 4 / 5;
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 14px;
+  aspect-ratio: 5 / 6;
 }
-.pj-hero__card {
+.pj-hero__tile {
   position: relative;
-  width: 100%;
-  height: 100%;
-  transform-style: preserve-3d;
-  transition: transform .9s var(--pj-ease);
-  will-change: transform;
-}
-.pj-hero__frame {
-  position: absolute;
-  inset: 0;
+  margin: 0;
   overflow: hidden;
-  border-radius: 320px 320px var(--pj-radius-lg) var(--pj-radius-lg);
-  box-shadow: var(--pj-shadow-lg), 0 0 0 1px rgba(201, 166, 107, .2);
-  transform: translateZ(40px);
+  border-radius: 22px;
+  border: 1px solid rgba(201, 166, 107, .22);
+  box-shadow: var(--pj-shadow-lg);
+  background: var(--pj-charcoal);
 }
-.pj-hero__frame img {
+/* Leaf silhouette: two opposite corners swept wide, two kept tight */
+.pj-hero__tile--main   { grid-row: 1 / 3; border-radius: 180px 22px 180px 22px; }
+.pj-hero__tile--top    { border-radius: 22px 90px 22px 90px; }
+.pj-hero__tile--bottom { border-radius: 22px 90px 22px 90px; }
+.pj-hero__tile img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transform: scale(1.06);
+  transform: scale(1.04);
   transition: transform 1.4s var(--pj-ease);
 }
-.pj-hero__stage:hover .pj-hero__frame img { transform: scale(1.12); }
-.pj-hero__frame::after {
+.pj-hero__tile:hover img { transform: scale(1.12); }
+.pj-hero__tile::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, transparent 45%, rgba(8, 8, 10, .55));
+  background: linear-gradient(180deg, transparent 55%, rgba(8, 8, 10, .6));
+  pointer-events: none;
 }
-.pj-hero__ring {
-  position: absolute;
-  inset: -6% -6% auto auto;
-  width: 46%;
-  aspect-ratio: 1;
-  border: 1px solid rgba(201, 166, 107, .35);
-  border-radius: 50%;
-  transform: translateZ(90px);
-  animation: pjFloat 7s ease-in-out infinite;
-}
+/* Glass product card floating over the main tile */
 .pj-hero__chip {
   position: absolute;
-  left: -6%;
-  bottom: 12%;
-  padding: 1.05rem 1.3rem;
-  background: var(--pj-glass);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(201, 166, 107, .28);
-  border-radius: var(--pj-radius-lg);
-  transform: translateZ(110px);
+  left: -8%;
+  bottom: 7%;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  padding: .9rem .9rem .9rem 1.2rem;
+  background: rgba(14, 15, 18, .55);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(201, 166, 107, .3);
+  border-radius: 16px;
   box-shadow: var(--pj-shadow-md);
+  text-decoration: none;
   animation: pjFloatChip 6s ease-in-out infinite .6s;
 }
-/* Montserrat at solid weights: the thin serif and the 55% ivory both
-   washed out against the photograph behind the glass. */
+/* Montserrat at solid weights: the thin serif washed out against the glass. */
 .pj-hero__chip .t {
   font-family: var(--pj-sans);
   font-size: 1.05rem;
@@ -1176,13 +1171,60 @@ body:not([data-page="home"]) .pj-header.is-stuck {
   color: #fff;
   margin-top: .42rem;
 }
-@keyframes pjFloat {
-  0%, 100% { transform: translateZ(90px) translateY(0); }
-  50%      { transform: translateZ(90px) translateY(-14px); }
+.pj-hero__chip-go {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--pj-gold);
+  color: var(--pj-black);
+  transition: transform .5s var(--pj-ease);
 }
+.pj-hero__chip:hover .pj-hero__chip-go { transform: rotate(45deg); }
+
+/* Rotating seal where the three tiles meet */
+.pj-hero__seal {
+  position: absolute;
+  top: 50%;
+  left: 55.5%;
+  z-index: 2;
+  width: 112px;
+  height: 112px;
+  display: grid;
+  place-items: center;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: rgba(8, 8, 10, .7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(201, 166, 107, .4);
+}
+.pj-hero__seal svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  animation: pjSpin 18s linear infinite;
+}
+.pj-hero__seal text {
+  font-family: var(--pj-sans);
+  font-size: 7.6px;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  fill: var(--pj-gold-light);
+}
+.pj-hero__seal i { font-size: 1.4rem; color: var(--pj-gold); }
+
 @keyframes pjFloatChip {
-  0%, 100% { transform: translateZ(110px) translateY(0); }
-  50%      { transform: translateZ(110px) translateY(-11px); }
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pj-hero__seal svg,
+  .pj-hero__chip { animation: none; }
 }
 
 /* Scroll cue */
@@ -2738,7 +2780,8 @@ body:not([data-page="home"]) .pj-header.is-stuck {
   .pj-cat,
   .pj-cat:nth-child(n) { grid-column: span 1; aspect-ratio: 4/5; }
 
-  .pj-hero__chip { left: 0; bottom: 6%; padding: .8rem 1rem; }
+  .pj-hero__chip { left: 0; bottom: 4%; padding: .7rem .7rem .7rem 1rem; }
+  .pj-hero__seal { width: 88px; height: 88px; }
   .pj-hero__stats { gap: 1.6rem 2.2rem; }
   .pj-grid-products { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
   .pj-card__name { font-size: .95rem; }

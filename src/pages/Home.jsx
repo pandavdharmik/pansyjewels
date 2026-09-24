@@ -24,7 +24,8 @@ export default function Home() {
   {/* ======================= 1. HERO ======================= */}
   <section className="pj-hero" id="top">
     <div className="pj-hero__bg" data-parallax-scroll="0.14">
-      <img src="https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=1900&q=80" alt="Fine gold jewellery on a dark surface" />
+      <video src="/videos/hero-jewellery.mp4" autoPlay muted loop playsInline
+             preload="auto" aria-hidden="true" />
     </div>
     <div className="pj-hero__veil"></div>
     <div className="pj-hero__sweep"></div>
@@ -70,18 +71,37 @@ export default function Home() {
         </div>
       </div>
 
-      {/* 3D tilt stage */}
-      <div className="pj-hero__stage" data-tilt="" data-reveal="zoom" data-reveal-delay="200">
-        <div className="pj-hero__card" data-tilt-card="">
-          <div className="pj-hero__frame">
-            <img src="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=1100&q=80"
-                 alt="Model wearing a Pansy Jewels diamond ring" />
+      {/* Bento collage: one tall piece, two stacked, a glass product card and a rotating seal */}
+      <div className="pj-hero__stage" data-reveal="zoom" data-reveal-delay="200">
+        <figure className="pj-hero__tile pj-hero__tile--main">
+          <img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=900&q=80"
+               alt="The Lumière layered chain necklace in 18k gold" />
+        </figure>
+        <figure className="pj-hero__tile pj-hero__tile--top">
+          <img src="https://images.unsplash.com/photo-1602173574767-37ac01994b2a?auto=format&fit=crop&w=600&q=80"
+               alt="A gold chain bracelet" />
+        </figure>
+        <figure className="pj-hero__tile pj-hero__tile--bottom">
+          <img src="https://images.unsplash.com/photo-1611591437281-460bfbe1220a?auto=format&fit=crop&w=600&q=80"
+               alt="A rose gold diamond bracelet" />
+        </figure>
+
+        <Link className="pj-hero__chip" to="/product/lumiere-layered">
+          <div>
+            <div className="t">Layered Chain</div>
+            <div className="s">18k Gold · Layered</div>
           </div>
-          <div className="pj-hero__ring" aria-hidden="true"></div>
-          <div className="pj-hero__chip">
-            <div className="t">Aurelia Solitaire</div>
-            <div className="s">18k Gold · 1.20 ct</div>
-          </div>
+          <span className="pj-hero__chip-go" aria-hidden="true"><i className="bi bi-arrow-up-right"></i></span>
+        </Link>
+
+        <div className="pj-hero__seal" aria-hidden="true">
+          <svg viewBox="0 0 100 100">
+            <defs>
+              <path id="pjSealPath" d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0" />
+            </defs>
+            <text><textPath href="#pjSealPath" textLength="234" lengthAdjust="spacing">Handcrafted · Certified · Since 2010 ·</textPath></text>
+          </svg>
+          <i className="bi bi-gem"></i>
         </div>
       </div>
 
