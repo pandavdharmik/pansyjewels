@@ -1,0 +1,176 @@
+/* =====================================================================
+   PANSY JEWELS — ethical-sourcing.css
+   Page-scoped styles for ethical-sourcing.html. Loaded AFTER
+   assets/css/style.css, so the shared header, menu, footer and modals
+   keep their own rules.
+
+   The page runs light: a warm ivory ground washed with champagne, gold
+   rules and gold section titles, so it sits in the same family as the
+   other Education pages rather than inverting to dark.
+
+   Everything here is namespaced under .pje- so it cannot leak into the
+   rest of the site.
+
+   Contents
+   --------
+   1. Page ground + tokens
+   2. Masthead
+   3. Content rows (copy + photograph)
+   4. Closing CTA
+   5. Responsive
+   6. Reduced motion
+   ===================================================================== */
+
+/* ---------------------- 1. PAGE GROUND + TOKENS --------------------- */
+.pje {
+  /* One place to retune the warmth of the page. */
+  --pje-body:  rgba(14, 15, 18, .75);
+  --pje-rule:  rgba(142, 110, 60, .22);
+  --pje-panel: rgba(255, 255, 255, .55);
+
+  position: relative;
+  background:
+    radial-gradient(120% 70% at 85% 0%, rgba(243, 230, 204, .85) 0%, rgba(243, 230, 204, 0) 62%),
+    linear-gradient(180deg, var(--pj-ivory) 0%, var(--pj-ivory-2) 100%);
+  color: var(--pj-ink);
+}
+
+/* ---------------------------- 2. MASTHEAD --------------------------- */
+.pje-intro {
+  padding-top: clamp(7rem, 12vh, 9.5rem);
+  padding-bottom: clamp(2rem, 4vw, 3.5rem);
+}
+
+.pje-masthead { max-width: 52rem; }
+
+.pje-title {
+  font-family: var(--pj-serif);
+  font-weight: 600;
+  line-height: 1.02;
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  /* Opens the masthead now, so no top margin — that .6rem only existed
+     to clear the eyebrow that used to sit above it. */
+  margin: 0;
+  color: var(--pj-ink);
+}
+.pje-title em { font-style: italic; color: var(--pj-gold-deep); }
+
+.pje-lede {
+  margin: clamp(1.3rem, 2.5vw, 1.9rem) 0 0;
+  max-width: 44rem;
+  line-height: 1.95;
+  font-family: var(--pj-sans);
+  font-size: clamp(1rem, 1.3vw, 1.1rem);
+  font-weight: 400;
+  color: rgba(14, 15, 18, .85);
+}
+
+/* -------------------------- 3. CONTENT ROWS ------------------------- */
+/* Copy left, photograph right, the way the reference reads. A gold
+   hairline between rows keeps the rhythm without boxing anything in. */
+.pje-row {
+  padding-block: clamp(2.5rem, 5vw, 4.25rem);
+  scroll-margin-top: 5rem;
+}
+.pje-row + .pje-row { border-top: 1px solid var(--pje-rule); }
+
+.pje-row__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  gap: clamp(1.8rem, 4.5vw, 4rem);
+  align-items: center;
+}
+
+.pje-row__title {
+  margin: 0 0 clamp(.9rem, 2vw, 1.35rem);
+  font-family: var(--pj-serif);
+  font-weight: 600;
+  font-size: clamp(1.55rem, 3.4vw, 2.5rem);
+  line-height: 1.15;
+  letter-spacing: .01em;
+  color: var(--pj-gold-deep);
+}
+/* A short gold stroke under each row title, echoing the section rules
+   used on the diamond education page. */
+.pje-row__title::after {
+  content: "";
+  display: block;
+  width: 3.5rem;
+  height: 1px;
+  margin-top: .85rem;
+  background: var(--pj-gold);
+}
+
+.pje-row__body p {
+  margin-bottom: 1.05rem;
+  line-height: 1.95;
+  font-family: var(--pj-sans);
+  font-size: 1rem;
+  font-weight: 400;
+  color: rgba(14, 15, 18, .85);
+}
+.pje-row__body p:last-child { margin-bottom: 0; }
+
+.pje-row__media {
+  margin: 0;
+  overflow: hidden;
+  border-radius: var(--pj-radius-lg);
+  box-shadow: var(--pj-shadow-md);
+}
+.pje-row__media img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  transition: transform 1.2s var(--pj-ease);
+}
+.pje-row__media:hover img { transform: scale(1.04); }
+
+/* -------------------------- 4. CLOSING CTA -------------------------- */
+.pje-cta { padding-block: clamp(3rem, 6vw, 5.5rem); }
+
+.pje-cta__inner {
+  max-width: 46rem;
+  margin-inline: auto;
+  padding: clamp(2rem, 4vw, 3.25rem) clamp(1.5rem, 3vw, 3rem);
+  text-align: center;
+  background: var(--pje-panel);
+  border: 1px solid var(--pje-rule);
+  border-radius: var(--pj-radius-lg);
+  box-shadow: var(--pj-shadow-sm);
+}
+.pje-cta__inner h2 { margin: .7rem 0 1rem; color: var(--pj-ink); }
+.pje-cta__inner p {
+  margin: 0 auto;
+  max-width: 34rem;
+  line-height: 1.95;
+  font-family: var(--pj-sans);
+  font-size: 1rem;
+  font-weight: 400;
+  color: rgba(14, 15, 18, .85);
+}
+.pje-cta__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: .9rem;
+  margin-top: clamp(1.5rem, 3vw, 2.2rem);
+}
+
+/* --------------------------- 5. RESPONSIVE -------------------------- */
+@media (max-width: 991.98px) {
+  .pje-row__grid { grid-template-columns: 1fr; }
+  /* Photograph first once stacked, so each row opens with the image the
+     way the desktop layout pairs them. */
+  .pje-row__media { order: -1; }
+}
+
+@media (max-width: 575.98px) {
+  .pje-row__media img { aspect-ratio: 4 / 3; }
+}
+
+/* ------------------------ 6. REDUCED MOTION ------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .pje-row__media img { transition: none; }
+  .pje-row__media:hover img { transform: none; }
+}

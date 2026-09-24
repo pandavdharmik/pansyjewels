@@ -1,0 +1,220 @@
+/* =====================================================================
+   PANSY JEWELS — learn-about-metals.css
+   Page-scoped styles for learn-about-metals.html. Loaded AFTER
+   assets/css/style.css, so the shared header, menu, footer and modals
+   keep their own rules.
+
+   Everything here is namespaced under .pjm- so it cannot leak into the
+   rest of the site.
+
+   Contents
+   --------
+   1. Page shell + masthead
+   2. Jump list
+   3. Metal bands (alternating image / copy)
+   4. Closing CTA
+   5. Responsive
+   6. Reduced motion
+   ===================================================================== */
+
+.pjm { background: var(--pj-ivory); }
+
+/* --------------------- 1. PAGE SHELL + MASTHEAD --------------------- */
+.pjm-intro {
+  padding-top: clamp(7rem, 12vh, 9.5rem);
+  padding-bottom: clamp(3rem, 6vw, 5rem);
+}
+
+.pjm-intro__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: center;
+}
+
+.pjm-title {
+  font-family: var(--pj-serif);
+  font-weight: 600;
+  line-height: 1.02;
+  font-size: clamp(2.5rem, 6vw, 4.8rem);
+  /* Opens the masthead now, so no top margin — that .6rem only existed
+     to clear the eyebrow that used to sit above it. */
+  margin: 0;
+}
+.pjm-title em { font-style: italic; color: var(--pj-gold-deep); }
+
+.pjm-lede {
+  margin: clamp(1.3rem, 2.5vw, 1.9rem) 0 0;
+  line-height: 1.95;
+  font-family: var(--pj-sans);
+  font-size: clamp(1rem, 1.3vw, 1.1rem);
+  font-weight: 400;
+  color: rgba(14, 15, 18, .85);
+}
+
+.pjm-intro__media {
+  margin: 0;
+  overflow: hidden;
+  border-radius: var(--pj-radius-lg);
+  box-shadow: var(--pj-shadow-md);
+}
+.pjm-intro__media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+}
+
+/* ---------------------------- 2. JUMP LIST -------------------------- */
+/* Three short anchors so the page can be read out of order — the metals
+   below are independent choices, not a sequence. */
+.pjm-jump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .6rem;
+  list-style: none;
+  margin: clamp(1.6rem, 3vw, 2.4rem) 0 0;
+  padding: 0;
+}
+.pjm-jump a {
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+  padding: .6rem 1.1rem;
+  border: 1px solid rgba(14, 15, 18, .16);
+  border-radius: 999px;
+  font-family: var(--pj-sans);
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--pj-ink);
+  transition: border-color .35s var(--pj-ease), color .35s var(--pj-ease),
+              background-color .35s var(--pj-ease);
+  font-size: .76rem;
+  font-weight: 600;
+}
+.pjm-jump a:hover,
+.pjm-jump a:focus-visible {
+  border-color: transparent;
+  background: var(--pj-ink);
+  color: var(--pj-gold-light);
+}
+.pjm-jump__sym {
+  font-family: var(--pj-serif);
+  font-size: .95rem;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--pj-gold-deep);
+  transition: color .35s var(--pj-ease);
+  font-weight: 600;
+}
+.pjm-jump a:hover .pjm-jump__sym { color: var(--pj-gold); }
+
+/* -------------------------- 3. METAL BANDS -------------------------- */
+/* Light and dark bands alternate down the page, each one pairing a photo
+   with its copy. --flip moves the photo to the right. */
+.pjm-band {
+  padding-block: clamp(3rem, 6vw, 5.5rem);
+  scroll-margin-top: 5rem;
+}
+.pjm-band--dark {
+  background: var(--pj-dark-grad);
+  color: var(--pj-ivory);
+}
+
+.pjm-band__grid {
+  display: grid;
+  grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr);
+  gap: clamp(1.8rem, 4.5vw, 4rem);
+  align-items: center;
+}
+.pjm-band__grid--flip .pjm-band__media { order: 2; }
+
+.pjm-band__media {
+  margin: 0;
+  overflow: hidden;
+  border-radius: var(--pj-radius-lg);
+}
+.pjm-band__media img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  transition: transform 1.2s var(--pj-ease);
+}
+.pjm-band__media:hover img { transform: scale(1.04); }
+
+.pjm-band__title {
+  margin: 0 0 clamp(1rem, 2vw, 1.5rem);
+  padding-bottom: .7rem;
+  border-bottom: 1px solid rgba(14, 15, 18, .14);
+  font-family: var(--pj-serif);
+  font-weight: 600;
+  font-size: clamp(1.7rem, 3.6vw, 2.8rem);
+  letter-spacing: .01em;
+}
+.pjm-band--dark .pjm-band__title {
+  border-bottom-color: rgba(201, 166, 107, .35);
+  color: var(--pj-gold-light);
+}
+
+.pjm-band__body p {
+  margin-bottom: 1.05rem;
+  line-height: 1.95;
+  font-family: var(--pj-sans);
+  font-size: 1rem;
+  font-weight: 400;
+  color: rgba(14, 15, 18, .85);
+}
+.pjm-band__body p:last-child { margin-bottom: 0; }
+.pjm-band--dark .pjm-band__body p {
+  color: rgba(247, 242, 234, .9);
+}
+
+/* -------------------------- 4. CLOSING CTA -------------------------- */
+.pjm-cta {
+  padding-block: clamp(3.5rem, 7vw, 6rem);
+  background: var(--pj-ivory-2);
+}
+.pjm-cta__inner {
+  max-width: 44rem;
+  margin-inline: auto;
+  text-align: center;
+}
+.pjm-cta__inner h2 { margin: .7rem 0 1rem; }
+.pjm-cta__inner p {
+  margin: 0 auto;
+  max-width: 34rem;
+  line-height: 1.95;
+  font-family: var(--pj-sans);
+  font-size: 1rem;
+  font-weight: 400;
+  color: rgba(14, 15, 18, .85);
+}
+.pjm-cta__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: .9rem;
+  margin-top: clamp(1.6rem, 3vw, 2.4rem);
+}
+/* --------------------------- 5. RESPONSIVE -------------------------- */
+@media (max-width: 991.98px) {
+  .pjm-intro__grid { grid-template-columns: 1fr; }
+  .pjm-band__grid { grid-template-columns: 1fr; }
+  /* Photo above the copy in every band once they stack, so the reading
+     order stays consistent regardless of --flip. */
+  .pjm-band__grid--flip .pjm-band__media { order: 0; }
+}
+
+@media (max-width: 575.98px) {
+  .pjm-intro__media img { aspect-ratio: 4 / 3; }
+  .pjm-jump a { padding: .5rem .9rem; font-size: .7rem; font-weight: 600; letter-spacing: .15em; }
+}
+
+/* ------------------------ 6. REDUCED MOTION ------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .pjm-band__media img,
+  .pjm-jump a { transition: none; }
+  .pjm-band__media:hover img { transform: none; }
+}

@@ -1,0 +1,597 @@
+/* =====================================================================
+   PANSY JEWELS — contact.css
+   Page-scoped styles for contact.html. Loaded AFTER assets/css/style.css,
+   so the shared header, menu, footer and modals keep their own rules.
+
+   Everything here is namespaced under .pjc- to guarantee it cannot leak
+   into the rest of the site.
+
+   Contents
+   --------
+   1. Tokens
+   2. Page shell + breadcrumb
+   3. Row 1 — contact information
+   4. Row 2 — contact experience (visual + form)
+   5. Row 3 — map
+   6. Scroll reveal
+   7. Responsive
+   8. Reduced motion
+   ===================================================================== */
+
+/* ----------------------------- 1. TOKENS ---------------------------- */
+.pjc {
+  --pjc-charcoal:   #111111;
+  --pjc-ivory:      #f7f3ec;
+  --pjc-gold:       #c5a46d;
+  /* Gold for text. #8e7650 only reached 4.3:1, which is what left the
+     small caps labels looking washed out; this matches the --pj-gold-ink
+     used site-wide for the same job. */
+  --pjc-gold-muted: #7a5c2c;
+  --pjc-white:      #ffffff;
+
+  /* Derived tints — kept as variables so a palette change stays central */
+  --pjc-rule:       rgba(17, 17, 17, .12);
+  --pjc-rule-soft:  rgba(17, 17, 17, .07);
+  --pjc-muted:      rgba(17, 17, 17, .68);
+  /* Supporting copy, not decoration — .38 left it at 2.5:1 */
+  --pjc-faint:      rgba(17, 17, 17, .6);
+  /* The one genuinely decorative tint: breadcrumb separators */
+  --pjc-hairline:   rgba(17, 17, 17, .35);
+  --pjc-gold-wash:  rgba(197, 164, 109, .14);
+
+  --pjc-serif: "Cormorant Garamond", "Playfair Display", Georgia, serif;
+  --pjc-sans:  "Montserrat", "Inter", "Manrope", system-ui, sans-serif;
+
+  --pjc-ease:  cubic-bezier(.22, .61, .36, 1);
+  --pjc-gutter: clamp(1.25rem, 4vw, 4.5rem);
+
+  background: var(--pjc-ivory);
+  color: var(--pjc-charcoal);
+}
+
+/* ---------------------- 2. PAGE SHELL + BREADCRUMB ------------------ */
+.pjc__shell {
+  width: 100%;
+  max-width: 1560px;
+  margin-inline: auto;
+  padding-inline: var(--pjc-gutter);
+}
+
+.pjc__crumb {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  padding-top: clamp(7rem, 12vh, 9.5rem);
+  font-family: var(--pjc-sans);
+  font-size: calc(.62rem + 1px);
+  font-weight: 500;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: rgba(17, 17, 17, .85);
+}
+/* Matches .pj-crumb in style.css: dark trail at 500, lighter
+   separators, current page in deep gold at 600. */
+.pjc__crumb a { color: rgba(17, 17, 17, .85); transition: color .4s var(--pjc-ease); }
+.pjc__crumb a:hover { color: var(--pjc-gold-muted); }
+.pjc__crumb span[aria-current] { color: var(--pjc-gold-muted); font-weight: 600; }
+.pjc__crumb span[aria-hidden] { color: rgba(17, 17, 17, .45); }
+
+/* Shared section furniture */
+.pjc__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: .85rem;
+  font-family: var(--pjc-sans);
+  font-size: .765rem; /* .64rem + 2px */
+  font-weight: 600;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--pj-gold);
+}
+.pjc__eyebrow::before {
+  content: "";
+  width: clamp(24px, 4vw, 44px);
+  height: 1px;
+  background: currentColor;
+  opacity: .55;
+}
+.pjc__title {
+  font-family: var(--pjc-serif);
+  font-weight: 600;
+  font-size: clamp(2.1rem, 4vw, 3.4rem);
+  line-height: 1.08;
+  letter-spacing: -.015em;
+  margin: 1rem 0 0;
+}
+.pjc__title em { font-style: italic; color: var(--pjc-gold-muted); }
+/* The page heading opens its section now, so it drops the 1rem that only
+   existed to clear an eyebrow. Scoped to .pjc-info because the form's
+   "Send us a message" heading shares this class and keeps its eyebrow. */
+.pjc-info .pjc__title { margin-top: 0; }
+.pjc__lede {
+  line-height: 1.75;
+  max-width: 46ch;
+  margin: 1.1rem 0 0;
+  font-family: var(--pjc-sans);
+  font-size: 1rem;
+  font-weight: 400;
+  color: rgba(17, 17, 17, .85);
+}
+
+/* ------------------- 3. ROW 1 — CONTACT INFORMATION ----------------- */
+.pjc-info { padding-block: clamp(3.5rem, 7vw, 6rem); }
+.pjc-info__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1rem, 2vw, 1.75rem);
+  margin-top: clamp(2rem, 4vw, 3rem);
+}
+
+/* Light luxury cards: a white surface on ivory, one hairline, barely any
+   radius. The lift and tilt share one transform via --lift / --rx / --ry. */
+.pjc-info__item {
+  --lift: 0px;
+  position: relative;
+  display: block;
+  padding: clamp(2rem, 3.4vw, 2.9rem);
+  background: var(--pjc-white);
+  border: 1px solid var(--pjc-rule-soft);
+  border-radius: 2px;
+  color: inherit;
+  box-shadow: 0 2px 10px -6px rgba(17, 17, 17, .12);
+  transform: perspective(900px)
+             rotateX(var(--rx, 0deg))
+             rotateY(var(--ry, 0deg))
+             translateY(var(--lift));
+  transform-style: preserve-3d;
+  transition: transform .45s var(--pjc-ease), box-shadow .5s var(--pjc-ease),
+              border-color .5s var(--pjc-ease);
+}
+.pjc-info__item:hover,
+.pjc-info__item:focus-visible {
+  --lift: -6px;
+  border-color: rgba(197, 164, 109, .42);
+  box-shadow: 0 26px 50px -30px rgba(17, 17, 17, .38);
+}
+.pjc-info__item:focus-visible {
+  outline: 2px solid var(--pjc-gold);
+  outline-offset: 4px;
+}
+
+/* Gold accent drawing across the card's top edge */
+.pjc-info__item::after {
+  content: "";
+  position: absolute;
+  left: 0; top: -1px;
+  width: 0; height: 2px;
+  background: var(--pjc-gold);
+  transition: width .65s var(--pjc-ease);
+}
+.pjc-info__item:hover::after,
+.pjc-info__item:focus-visible::after { width: 100%; }
+
+.pjc-info__ico {
+  display: grid;
+  place-items: center;
+  width: 46px; height: 46px;
+  font-size: 1.15rem;
+  color: var(--pjc-gold);
+  background: var(--pjc-gold-wash);
+  border-radius: 50%;
+  margin-bottom: clamp(1.3rem, 2.4vw, 1.8rem);
+  transition: transform .55s var(--pjc-ease), background .55s var(--pjc-ease),
+              color .55s var(--pjc-ease);
+}
+.pjc-info__item:hover .pjc-info__ico {
+  transform: translateY(-4px);
+  background: var(--pjc-gold);
+  color: var(--pjc-white);
+}
+
+.pjc-info__label {
+  display: block;
+  font-family: var(--pjc-sans);
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--pjc-gold-muted);
+  margin-bottom: .9rem;
+  font-size: 12px;
+  font-weight: 600;
+}
+/* The address, number or email is the point of the card, so it sits at
+   full charcoal from the start. It was greyed at rest and only resolved
+   on hover, which read as disabled. Hover now shifts it to gold instead. */
+.pjc-info__value {
+  display: block;
+  line-height: 1.3;
+  color: var(--pjc-charcoal);
+  transition: color .45s var(--pjc-ease);
+  font-family: var(--pjc-sans);
+  font-weight: 600;
+  font-size: clamp(1.05rem, 1.5vw, 1.3rem);
+}
+.pjc-info__item:hover .pjc-info__value { color: var(--pjc-gold-muted); }
+.pjc-info__note {
+  display: block;
+  font-family: var(--pjc-sans);
+  margin-top: .65rem;
+  font-size: .9rem;
+  font-weight: 400;
+  color: rgba(17, 17, 17, .8);
+}
+
+/* ------------------- 4. ROW 2 — CONTACT EXPERIENCE ------------------ */
+.pjc-exp { padding-block: clamp(3rem, 6vw, 5rem); }
+.pjc-exp__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(2.5rem, 5vw, 5rem);
+  align-items: start;
+}
+
+/* --- Left: visual --- */
+.pjc-exp__visual { position: relative; }
+.pjc-exp__form { min-width: 0; }
+.pjc-exp__figure {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 2px;
+  aspect-ratio: 4 / 5;
+  background: rgba(17, 17, 17, .06);
+  box-shadow: 0 30px 70px -45px rgba(17, 17, 17, .55);
+  /* Parallax tilt driven by --rx/--ry in contact.js */
+  transform: perspective(1200px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform .5s var(--pjc-ease);
+}
+.pjc-exp__figure img {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transform: scale(1.02);
+  transition: transform 1.6s var(--pjc-ease);
+}
+.pjc-exp__figure:hover img { transform: scale(1.09); }
+.pjc-exp__figure::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 42%, rgba(17, 17, 17, .78));
+  pointer-events: none;
+}
+
+/* Text block sitting over the foot of the image */
+.pjc-exp__overlay {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  z-index: 2;
+  padding: clamp(1.5rem, 3vw, 2.6rem);
+  color: var(--pjc-white);
+}
+.pjc-exp__overlay h2 {
+  font-family: var(--pjc-serif);
+  font-weight: 600;
+  font-size: clamp(1.35rem, 2.3vw, 2rem);
+  line-height: 1.2;
+  letter-spacing: .01em;
+  margin: .9rem 0 0;
+  color: var(--pjc-white);
+}
+.pjc-exp__overlay p {
+  line-height: 1.7;
+  max-width: 44ch;
+  margin: .8rem 0 0;
+  font-size: .95rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, .9);
+}
+.pjc-exp__overlay .pjc__eyebrow { color: var(--pjc-gold); }
+
+.pjc-exp__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+  margin-top: 1.3rem;
+  padding-bottom: .35rem;
+  font-family: var(--pjc-sans);
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--pjc-white);
+  border-bottom: 1px solid rgba(255, 255, 255, .35);
+  transition: color .45s var(--pjc-ease), border-color .45s var(--pjc-ease);
+  font-size: 12px;
+  font-weight: 600;
+}
+.pjc-exp__cta i { transition: transform .45s var(--pjc-ease); }
+.pjc-exp__cta:hover { color: var(--pjc-gold); border-color: var(--pjc-gold); }
+.pjc-exp__cta:hover i { transform: translateX(5px); }
+
+/* --- Right: form --- */
+.pjc-form__head { margin-bottom: clamp(1.8rem, 3.5vw, 2.6rem); }
+
+.pjc-form__row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 clamp(1.2rem, 2.5vw, 2rem);
+}
+
+/* Underline fields — no boxes, no Bootstrap chrome */
+.pjc-field { position: relative; margin-bottom: clamp(1.6rem, 3vw, 2.1rem); }
+/* Matched to the info-card labels: .58rem at .26em tracking was too small
+   and too stretched to read, whatever colour it carried. */
+.pjc-field label {
+  display: block;
+  font-family: var(--pjc-sans);
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--pjc-gold-muted);
+  margin-bottom: .7rem;
+  font-size: 12px;
+  font-weight: 600;
+}
+.pjc-field input,
+.pjc-field textarea {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--pjc-rule);
+  border-radius: 0;
+  padding: .55rem 0;
+  font-family: var(--pjc-sans);
+  color: var(--pjc-charcoal);
+  transition: border-color .45s var(--pjc-ease);
+  font-size: 1rem;
+  font-weight: 400;
+}
+.pjc-field textarea { min-height: 116px; resize: vertical; }
+.pjc-field input::placeholder,
+.pjc-field textarea::placeholder { color: var(--pjc-faint); }
+.pjc-field input:focus,
+.pjc-field textarea:focus { outline: none; }
+
+/* Gold line that draws in beneath the focused field */
+.pjc-field__line {
+  position: absolute;
+  left: 0; bottom: 0;
+  width: 0; height: 1px;
+  background: var(--pjc-gold);
+  transition: width .5s var(--pjc-ease);
+  pointer-events: none;
+}
+.pjc-field.is-focus .pjc-field__line { width: 100%; }
+
+/* Validation */
+.pjc-field__error {
+  display: block;
+  min-height: 1.05rem;
+  margin-top: .5rem;
+  font-family: var(--pjc-sans);
+  letter-spacing: .02em;
+  color: #9d3b34;
+  opacity: 0;
+  transform: translateY(-3px);
+  transition: opacity .35s var(--pjc-ease), transform .35s var(--pjc-ease);
+  font-size: .8rem;
+  font-weight: 500;
+}
+.pjc-field.is-invalid .pjc-field__error { opacity: 1; transform: none; }
+.pjc-field.is-invalid input,
+.pjc-field.is-invalid textarea { border-bottom-color: #9d3b34; }
+
+/* Buttons */
+.pjc-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .9rem;
+  margin-top: clamp(.6rem, 1.5vw, 1.2rem);
+}
+.pjc-btn {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .7rem;
+  padding: 1.05rem 2.2rem;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  font-family: var(--pjc-sans);
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color .45s var(--pjc-ease), border-color .45s var(--pjc-ease);
+  font-size: .74rem;
+  font-weight: 600;
+}
+.pjc-btn > * { position: relative; z-index: 1; }
+.pjc-btn i { transition: transform .45s var(--pjc-ease); }
+.pjc-btn:hover i { transform: translateX(4px); }
+/* Hover fill sweeps up from the base */
+.pjc-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform .5s var(--pjc-ease);
+}
+.pjc-btn:hover::before,
+.pjc-btn:focus-visible::before { transform: scaleY(1); }
+.pjc-btn:focus-visible { outline: 2px solid var(--pjc-gold); outline-offset: 3px; }
+
+.pjc-btn--gold { background: var(--pjc-gold); color: var(--pjc-charcoal); }
+.pjc-btn--gold::before { background: var(--pjc-charcoal); }
+.pjc-btn--gold:hover,
+.pjc-btn--gold:focus-visible { color: var(--pjc-white); }
+
+.pjc-btn--dark {
+  background: var(--pjc-charcoal);
+  color: var(--pjc-white);
+  border-color: var(--pjc-charcoal);
+}
+.pjc-btn--dark::before { background: var(--pjc-gold); }
+.pjc-btn--dark:hover,
+.pjc-btn--dark:focus-visible { color: var(--pjc-charcoal); }
+
+/* Success message */
+.pjc-success {
+  display: none;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-top: 1.6rem;
+  padding: 1.35rem 1.5rem;
+  background: var(--pjc-white);
+  border-left: 2px solid var(--pjc-gold);
+}
+.pjc-success.is-on { display: flex; animation: pjcRise .6s var(--pjc-ease) both; }
+.pjc-success i { color: var(--pjc-gold); font-size: 1.1rem; margin-top: .1rem; }
+.pjc-success p {
+  margin: 0;
+  line-height: 1.65;
+  font-size: .95rem;
+  font-weight: 400;
+  color: rgba(17, 17, 17, .85);
+}
+@keyframes pjcRise {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ------------------------- 5. ROW 3 — MAP --------------------------- */
+.pjc-map { padding-block: clamp(3rem, 6vw, 5rem) clamp(4rem, 8vw, 7rem); }
+.pjc-map__frame {
+  position: relative;
+  height: 480px;
+  overflow: hidden;
+  border: 1px solid var(--pjc-rule);
+  border-radius: 2px;
+  background: rgba(17, 17, 17, .05);
+}
+.pjc-map__frame iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+  /* Desaturated so the map sits inside the palette rather than fighting it */
+  filter: grayscale(1) contrast(.92) brightness(1.04);
+  transition: filter .8s var(--pjc-ease);
+}
+.pjc-map__frame:hover iframe { filter: grayscale(.45) contrast(.98) brightness(1.02); }
+
+/* Floating location card */
+.pjc-map__card {
+  position: absolute;
+  top: clamp(1.25rem, 3vw, 2.5rem);
+  left: clamp(1.25rem, 3vw, 2.5rem);
+  width: min(340px, calc(100% - 2.5rem));
+  padding: clamp(1.5rem, 2.8vw, 2.1rem);
+  background: var(--pjc-white);
+  border-radius: 2px;
+  box-shadow: 0 26px 60px -32px rgba(17, 17, 17, .5);
+}
+.pjc-map__card h2 {
+  font-family: var(--pjc-serif);
+  font-weight: 600;
+  font-size: clamp(1.4rem, 2.2vw, 1.9rem);
+  margin: .85rem 0 .2rem;
+  color: var(--pjc-charcoal);
+}
+.pjc-map__place {
+  display: block;
+  font-family: var(--pjc-sans);
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--pjc-gold-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+.pjc-map__addr {
+  margin: 1.1rem 0 0;
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--pjc-rule-soft);
+  line-height: 1.7;
+  font-size: .95rem;
+  font-weight: 400;
+  color: rgba(17, 17, 17, .85);
+}
+.pjc-map__link {
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+  margin-top: 1.2rem;
+  padding-bottom: .3rem;
+  font-family: var(--pjc-sans);
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--pjc-charcoal);
+  border-bottom: 1px solid var(--pjc-rule);
+  transition: color .45s var(--pjc-ease), border-color .45s var(--pjc-ease);
+  font-size: 12px;
+  font-weight: 600;
+}
+.pjc-map__link i { transition: transform .45s var(--pjc-ease); }
+.pjc-map__link:hover { color: var(--pjc-gold-muted); border-color: var(--pjc-gold); }
+.pjc-map__link:hover i { transform: translateX(4px); }
+
+/* --------------------------- 6. SCROLL REVEAL ----------------------- */
+.pjc-reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity .85s var(--pjc-ease), transform .85s var(--pjc-ease);
+}
+.pjc-reveal.is-in { opacity: 1; transform: none; }
+
+/* ---------------------------- 7. RESPONSIVE ------------------------- */
+@media (max-width: 1199.98px) {
+  .pjc-map__frame { height: 430px; }
+}
+
+@media (max-width: 991.98px) {
+  /* Row 2 stacks: image first, form second (source order already matches) */
+  .pjc-exp__grid { grid-template-columns: 1fr; }
+  .pjc-exp__figure { aspect-ratio: 16 / 11; }
+  .pjc-map__frame { height: 400px; }
+
+  /* Row 1 becomes 2 + 1 */
+  .pjc-info__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  /* The odd card out spans the full width so the row stays even */
+  .pjc-info__item:nth-child(3) { grid-column: span 2; }
+}
+
+@media (max-width: 767.98px) {
+  /* Row 1 stacks vertically */
+  .pjc-info__grid { grid-template-columns: 1fr; }
+  .pjc-info__item:nth-child(3) { grid-column: auto; }
+
+  /* Single-column form fields */
+  .pjc-form__row { grid-template-columns: 1fr; }
+
+  .pjc-map__frame { height: 350px; }
+  .pjc-map__card {
+    position: static;
+    width: 100%;
+    margin-top: -1px;
+    border: 1px solid var(--pjc-rule);
+    box-shadow: none;
+  }
+
+  /* Comfortable touch targets */
+  .pjc-actions { flex-direction: column; }
+  .pjc-btn { width: 100%; padding-block: 1.15rem; }
+}
+
+/* ------------------------- 8. REDUCED MOTION ------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  .pjc-reveal { opacity: 1; transform: none; transition: none; }
+  .pjc *,
+  .pjc *::before,
+  .pjc *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+  /* Tilt is disabled in JS too; this neutralises any inline value */
+  .pjc-info__item,
+  .pjc-exp__figure { transform: none !important; }
+}

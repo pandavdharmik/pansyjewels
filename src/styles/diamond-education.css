@@ -1,0 +1,462 @@
+/* =====================================================================
+   PANSY JEWELS — diamond-education.css
+   Page-scoped styles for diamond-education.html. Loaded AFTER
+   assets/css/style.css, so the shared header, menu, footer and modals
+   keep their own rules.
+
+   Everything here is namespaced under .pjd- so it cannot leak into the
+   rest of the site.
+
+   Contents
+   --------
+   1. Page shell + masthead
+   2. Section rule headings
+   3. Diamond line-art (shared by every illustration)
+   4. The 4Cs overview cards
+   5. Topic layout (text + panel)
+   6. Cut comparison
+   7. Colour scale
+   8. Clarity prose
+   9. Carat size chart
+   10. Closing CTA
+   11. Responsive
+   12. Reduced motion
+   ===================================================================== */
+
+.pjd {
+  /* Ivory page on a warm ground, the same pairing the About page uses. */
+  --pjd-rule:  rgba(14, 15, 18, .12);
+  --pjd-panel: #ffffff;
+  background: var(--pj-ivory);
+}
+
+/* --------------------- 1. PAGE SHELL + MASTHEAD --------------------- */
+.pjd-intro { padding-top: clamp(7rem, 12vh, 9.5rem); padding-bottom: 0; }
+
+.pjd-masthead { max-width: 60rem; }
+
+.pjd-title {
+  font-family: var(--pj-serif);
+  font-weight: 600;
+  line-height: 1.02;
+  font-size: clamp(2.6rem, 6.4vw, 5.2rem);
+  /* Opens the masthead now, so no top margin — that .6rem only existed
+     to clear the eyebrow that used to sit above it. */
+  margin: 0;
+}
+.pjd-title em { font-style: italic; color: var(--pj-gold-deep); }
+
+.pjd-lede {
+  margin-top: clamp(1.5rem, 3vw, 2.2rem);
+  max-width: 54rem;
+  font-size: clamp(1rem, 1.35vw, 1.1rem);
+  font-weight: 400;
+  line-height: 1.9;
+  color: rgba(14, 15, 18, .85);
+}
+
+/* --------------------- 2. SECTION RULE HEADINGS --------------------- */
+/* The title carried a gold hairline running out to the right of the text
+   as well as the underline below it. Two rules on one heading read as
+   clutter, so the trailing one is gone and the underline does the work. */
+.pjd-rule {
+  display: block;
+  margin: 0 0 clamp(2rem, 4vw, 3.25rem);
+  padding-bottom: .9rem;
+  border-bottom: 1px solid var(--pjd-rule);
+  font-family: var(--pj-serif);
+  font-weight: 600;
+  font-size: clamp(1.45rem, 3vw, 2.35rem);
+  letter-spacing: .01em;
+  color: var(--pj-ink);
+}
+
+/* ---------------------- 3. DIAMOND LINE-ART ------------------------- */
+/* One symbol set, tinted and scaled per use. fill and stroke are the only
+   levers set here, because they are inherited properties and so reach the
+   shapes inside the <use> shadow tree; everything else is an attribute on
+   the symbol itself. --pjd-tint fills the stone, the strokes stay in the
+   brand gold, so the art reads as one family across the page. */
+.pjd-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+.pjd-gem {
+  --pjd-tint: rgba(247, 242, 234, .5);
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  fill: var(--pjd-tint);
+  stroke: var(--pj-gold-deep);
+  stroke-linejoin: round;
+}
+
+/* A poorly cut stone spreads wider and shallower for the same weight. */
+.pjd-gem--shallow { transform: scaleY(.72) scaleX(1.12); }
+
+/* Every art box is a one-cell grid. Without an explicit row, the gem's
+   height: 100% has no definite track to resolve against, so the SVG
+   fell back to its 150px default and spilled over the label below. */
+.pjd-card__art,
+.pjd-compare__art,
+.pjd-scale__art,
+.pjd-carat__art { grid-template-rows: minmax(0, 100%); }
+
+/* ------------------- 4. THE 4CS OVERVIEW CARDS ---------------------- */
+.pjd-cards__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(1rem, 2vw, 1.75rem);
+}
+
+.pjd-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: .55rem;
+  padding: clamp(1.6rem, 2.6vw, 2.4rem) clamp(1.1rem, 2vw, 1.7rem) clamp(1.4rem, 2.4vw, 2rem);
+  background: var(--pjd-panel);
+  border: 1px solid var(--pjd-rule);
+  border-radius: var(--pj-radius-lg);
+  color: var(--pj-ink);
+  transition: transform .5s var(--pj-ease), box-shadow .5s var(--pj-ease),
+              border-color .5s var(--pj-ease);
+}
+.pjd-card:hover,
+.pjd-card:focus-visible {
+  transform: translateY(-6px);
+  border-color: rgba(201, 166, 107, .55);
+  box-shadow: var(--pj-shadow-md);
+  color: var(--pj-ink);
+}
+
+.pjd-card__art {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: clamp(5.5rem, 9vw, 7.5rem);
+  /* The stone fills its box edge to edge, so the label needs real air
+     below it rather than just the card's flex gap. */
+  margin-bottom: 1.1rem;
+}
+.pjd-card__art .pjd-gem { width: min(66%, 7.5rem); height: 92%; }
+
+/* Two inclusions, just enough to say "clarity" without looking flawed. */
+.pjd-card__spot {
+  position: absolute;
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: rgba(14, 15, 18, .5);
+}
+.pjd-card__spot--a { top: 42%; left: 45%; }
+.pjd-card__spot--b { top: 56%; left: 57%; width: 3px; height: 3px; opacity: .75; }
+
+.pjd-card__name {
+  font-family: var(--pj-sans);
+  font-size: .82rem;
+  font-weight: 600;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--pj-gold-ink);
+}
+
+.pjd-card__copy {
+  font-size: .92rem;
+  font-weight: 400;
+  line-height: 1.8;
+  color: rgba(14, 15, 18, .85);
+}
+
+.pjd-card__go {
+  margin-top: auto;
+  padding-top: .9rem;
+  font-family: var(--pj-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--pj-gold-ink);
+  transition: color .35s var(--pj-ease);
+}
+.pjd-card__go i { transition: transform .45s var(--pj-ease); }
+.pjd-card:hover .pjd-card__go { color: var(--pj-ink); }
+.pjd-card:hover .pjd-card__go i { transform: translateX(5px); }
+
+/* ---------------------- 5. TOPIC LAYOUT ----------------------------- */
+.pjd-topic { scroll-margin-top: 6rem; }
+
+.pjd-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  gap: clamp(2rem, 4.5vw, 4.5rem);
+  align-items: start;
+}
+
+.pjd-split__text p {
+  margin-bottom: 1.15rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.9;
+  color: rgba(14, 15, 18, .85);
+}
+.pjd-split__text p:last-child { margin-bottom: 0; }
+
+/* The one-line definition that opens each topic. Written with the parent
+   in the selector so it outranks the body-copy rules above without
+   reaching for !important. Montserrat and upright: only upright weights
+   of it are loaded, so an italic would be a synthesised slant. */
+.pjd-split__text .pjd-note,
+.pjd-prose .pjd-note {
+  padding-left: 1.1rem;
+  border-left: 2px solid var(--pj-gold);
+  font-family: var(--pj-sans);
+  font-size: clamp(1.05rem, 1.5vw, 1.2rem);
+  font-weight: 600;
+  font-style: normal;
+  line-height: 1.55;
+  color: var(--pj-ink);
+}
+.pjd-split__text .pjd-note { margin-bottom: 1.6rem; }
+.pjd-prose .pjd-note { margin-bottom: 0; }
+
+.pjd-panel {
+  margin: 0;
+  padding: clamp(1.4rem, 2.6vw, 2.2rem);
+  background: var(--pjd-panel);
+  border: 1px solid var(--pjd-rule);
+  border-radius: var(--pj-radius-lg);
+}
+
+.pjd-panel__head {
+  display: block;
+  margin-bottom: clamp(1.2rem, 2.2vw, 1.8rem);
+  padding-bottom: .75rem;
+  border-bottom: 1px solid var(--pjd-rule);
+  font-family: var(--pj-sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--pj-gold-ink);
+}
+.pjd-panel__head--mid {
+  margin-top: clamp(1.6rem, 3vw, 2.2rem);
+  border-bottom: 0;
+  border-top: 1px solid var(--pjd-rule);
+  padding: .9rem 0 0;
+  color: var(--pj-smoke);
+}
+
+/* --------------------- 6. CUT COMPARISON ---------------------------- */
+.pjd-compare {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1.2rem, 2.5vw, 2.2rem);
+  text-align: center;
+}
+
+.pjd-compare__art {
+  display: grid;
+  place-items: center;
+  height: clamp(5rem, 9vw, 7rem);
+  margin-bottom: 1.4rem;
+}
+.pjd-compare__art .pjd-gem { width: min(88%, 11rem); height: 100%; }
+
+.pjd-compare__grade {
+  margin-bottom: .7rem;
+  font-family: var(--pj-sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--pj-gold-ink);
+}
+.pjd-compare__grade em {
+  display: block;
+  margin-top: .3rem;
+  font-family: var(--pj-sans);
+  font-size: .95rem;
+  font-weight: 600;
+  font-style: normal;
+  letter-spacing: .02em;
+  text-transform: none;
+  color: var(--pj-ink);
+}
+
+.pjd-compare__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: .9rem;
+  font-weight: 500;
+  line-height: 2;
+  color: rgba(14, 15, 18, .82);
+}
+
+/* ----------------------- 7. COLOUR SCALE ---------------------------- */
+.pjd-scale {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(.8rem, 2vw, 1.6rem);
+  text-align: center;
+}
+.pjd-scale--muted { grid-template-columns: repeat(2, minmax(0, 1fr)); opacity: .78; }
+
+.pjd-scale__art {
+  display: grid;
+  place-items: center;
+  height: clamp(4rem, 7vw, 5.5rem);
+  margin-bottom: 1.1rem;
+}
+.pjd-scale__art .pjd-gem { width: min(80%, 5.5rem); height: 100%; }
+
+.pjd-scale__name {
+  display: block;
+  font-size: .9rem;
+  font-weight: 600;
+  color: var(--pj-ink);
+}
+.pjd-scale__grade {
+  display: block;
+  margin-top: .3rem;
+  font-family: var(--pj-sans);
+  font-size: .8rem;
+  font-weight: 600;
+  letter-spacing: .32em;
+  color: var(--pj-gold-ink);
+}
+
+/* ---------------------- 8. CLARITY PROSE ---------------------------- */
+.pjd-prose__cols {
+  margin-top: clamp(1.4rem, 2.5vw, 2rem);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1.5rem, 3.5vw, 3.5rem);
+}
+.pjd-prose p {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.9;
+  color: rgba(14, 15, 18, .85);
+}
+
+/* --------------------- 9. CARAT SIZE CHART -------------------------- */
+/* --pjd-mm on each tile is the stone's real diameter, so the ramp is a
+   true comparison; --pjd-scale converts millimetres to page pixels. */
+.pjd-carats {
+  --pjd-scale: .42rem;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: clamp(.5rem, 1.4vw, 1rem);
+  text-align: center;
+}
+
+.pjd-carat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: .85rem;
+  padding: .75rem .3rem .65rem;
+  border: 1px solid var(--pjd-rule);
+  border-radius: var(--pj-radius);
+}
+
+.pjd-carat__art {
+  display: grid;
+  place-items: center;
+  height: calc(11.2 * var(--pjd-scale));
+}
+.pjd-carat__art .pjd-gem {
+  width: calc(var(--pjd-mm) * var(--pjd-scale));
+  height: calc(var(--pjd-mm) * var(--pjd-scale));
+}
+
+.pjd-carat__val {
+  font-family: var(--pj-sans);
+  font-size: .78rem;
+  font-weight: 600;
+  letter-spacing: .06em;
+  color: var(--pj-ink);
+}
+
+.pjd-tip {
+  margin-top: clamp(1.3rem, 2.5vw, 2rem);
+  padding-top: clamp(1.1rem, 2vw, 1.5rem);
+  border-top: 1px solid var(--pjd-rule);
+  text-align: center;
+}
+.pjd-tip__label {
+  display: block;
+  margin-bottom: .55rem;
+  font-family: var(--pj-sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--pj-gold-ink);
+}
+.pjd-tip p {
+  margin: 0;
+  font-size: .95rem;
+  font-weight: 400;
+  line-height: 1.85;
+  color: rgba(14, 15, 18, .85);
+}
+
+/* ------------------------ 10. CLOSING CTA --------------------------- */
+.pjd-cta {
+  padding-block: clamp(3.5rem, 7vw, 6.5rem);
+  background: var(--pj-dark-grad);
+  color: var(--pj-ivory);
+}
+.pjd-cta__inner {
+  max-width: 44rem;
+  margin-inline: auto;
+  text-align: center;
+}
+.pjd-cta__inner h2 { margin: .7rem 0 1rem; color: var(--pj-ivory); }
+.pjd-cta__inner p {
+  margin: 0 auto;
+  max-width: 34rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.9;
+  color: rgba(247, 242, 234, .9);
+}
+.pjd-cta__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: .9rem;
+  margin-top: clamp(1.6rem, 3vw, 2.4rem);
+}
+
+/* ------------------------- 11. RESPONSIVE --------------------------- */
+@media (max-width: 991.98px) {
+  .pjd-cards__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pjd-split { grid-template-columns: 1fr; }
+  .pjd-prose__cols { grid-template-columns: 1fr; }
+  .pjd-carats { --pjd-scale: .38rem; }
+}
+
+@media (max-width: 575.98px) {
+  .pjd-cards__grid { grid-template-columns: 1fr; }
+  .pjd-compare { grid-template-columns: 1fr; }
+  .pjd-scale { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .6rem; }
+  .pjd-scale__grade { letter-spacing: .18em; font-size: .72rem; }
+  .pjd-carats { --pjd-scale: .34rem; gap: .4rem; }
+  .pjd-carat { padding: .55rem .2rem .5rem; }
+}
+
+/* ----------------------- 12. REDUCED MOTION ------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .pjd-card,
+  .pjd-card__go,
+  .pjd-card__go i { transition: none; }
+  .pjd-card:hover { transform: none; }
+}

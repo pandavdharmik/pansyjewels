@@ -1,0 +1,238 @@
+/* =====================================================================
+   PANSY JEWELS — certification.css
+   Page-scoped styles for certification.html. Loaded AFTER
+   assets/css/style.css, so the shared header, menu, footer and modals
+   keep their own rules.
+
+   Light page, warm champagne ground and gold rules, matching the other
+   Education pages.
+
+   Everything here is namespaced under .pjcr- so it cannot leak into the
+   rest of the site.
+
+   Contents
+   --------
+   1. Page ground + tokens
+   2. Masthead + hero photograph
+   3. Intro prose
+   4. Grading reports (copy + milestones)
+   5. Closing CTA
+   6. Responsive
+   7. Reduced motion
+   ===================================================================== */
+
+/* ---------------------- 1. PAGE GROUND + TOKENS --------------------- */
+.pjcr {
+  --pjcr-body:  rgba(14, 15, 18, .75);
+  --pjcr-rule:  rgba(142, 110, 60, .22);
+  --pjcr-panel: rgba(255, 255, 255, .55);
+
+  background:
+    radial-gradient(120% 70% at 85% 0%, rgba(243, 230, 204, .8) 0%, rgba(243, 230, 204, 0) 62%),
+    linear-gradient(180deg, var(--pj-ivory) 0%, var(--pj-ivory-2) 100%);
+  color: var(--pj-ink);
+}
+
+/* ------------------ 2. MASTHEAD + HERO PHOTOGRAPH ------------------- */
+.pjcr-intro {
+  padding-top: clamp(7rem, 12vh, 9.5rem);
+  padding-bottom: clamp(2.5rem, 5vw, 4rem);
+}
+
+.pjcr-masthead { max-width: 52rem; }
+
+.pjcr-title {
+  font-family: var(--pj-serif);
+  font-weight: 600;
+  line-height: 1.02;
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  /* Opens the masthead now, so no top margin — that .6rem only existed
+     to clear the eyebrow that used to sit above it. */
+  margin: 0;
+}
+.pjcr-title em { font-style: italic; color: var(--pj-gold-deep); }
+
+.pjcr-hero {
+  margin: clamp(2rem, 4vw, 3rem) 0 0;
+  overflow: hidden;
+  border-radius: var(--pj-radius-lg);
+  box-shadow: var(--pj-shadow-md);
+}
+/* An editorial band rather than a 3:2 photograph — at the shell's full
+   width, 3:2 stood over 1000px tall and pushed the prose off the fold.
+   21:8 matches the collection banners; the cap keeps it in hand on very
+   wide screens, where a ratio alone keeps growing. */
+.pjcr-hero img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 21 / 8;
+  max-height: clamp(300px, 52vh, 560px);
+  object-fit: cover;
+}
+
+/* --------------------------- 3. INTRO PROSE ------------------------- */
+/* Two columns under the photograph, the way the reference sets them, but
+   held to a comfortable measure so neither line runs long. */
+.pjcr-prose {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1.5rem, 3.5vw, 3.5rem);
+  margin-top: clamp(1.6rem, 3vw, 2.4rem);
+}
+.pjcr-prose p {
+  margin: 0;
+  line-height: 1.95;
+  font-family: var(--pj-sans);
+  font-size: 1rem;
+  font-weight: 400;
+  color: rgba(14, 15, 18, .85);
+}
+
+/* ----------------------- 4. GRADING REPORTS ------------------------- */
+.pjcr-reports { scroll-margin-top: 5rem; }
+
+/* Same rule-and-title treatment as the diamond education sections. */
+.pjcr-rule {
+  display: flex;
+  align-items: baseline;
+  gap: clamp(1rem, 2.5vw, 2rem);
+  margin: 0 0 clamp(2rem, 4vw, 3rem);
+  padding-bottom: .9rem;
+  border-bottom: 1px solid var(--pjcr-rule);
+  font-family: var(--pj-serif);
+  font-size: clamp(1.45rem, 3vw, 2.35rem);
+  color: var(--pj-ink);
+  font-weight: 600;
+}
+.pjcr-rule::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--pj-gold);
+  opacity: .55;
+  transform: translateY(-.35em);
+}
+
+.pjcr-reports__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, .75fr);
+  gap: clamp(2rem, 4.5vw, 4rem);
+  align-items: start;
+}
+
+.pjcr-reports__body p {
+  margin-bottom: 1.1rem;
+  line-height: 1.95;
+  font-family: var(--pj-sans);
+  font-size: 1rem;
+  font-weight: 400;
+  color: rgba(14, 15, 18, .85);
+}
+.pjcr-reports__body p:last-child { margin-bottom: 0; }
+
+/* ---- Milestones: the chronology already named in the copy ---- */
+.pjcr-marks {
+  padding: clamp(1.4rem, 2.6vw, 2rem);
+  background: var(--pjcr-panel);
+  border: 1px solid var(--pjcr-rule);
+  border-radius: var(--pj-radius-lg);
+}
+.pjcr-marks__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: none;
+}
+.pjcr-marks__list li {
+  position: relative;
+  padding: 0 0 1.35rem 1.4rem;
+  border-left: 1px solid var(--pjcr-rule);
+}
+.pjcr-marks__list li:last-child { padding-bottom: 0; }
+/* The dot that pins each year to the vertical rule. */
+.pjcr-marks__list li::before {
+  content: "";
+  position: absolute;
+  left: -4px;
+  top: .45rem;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--pj-gold);
+}
+
+.pjcr-marks__year {
+  display: block;
+  font-family: var(--pj-serif);
+  font-size: 1.35rem;
+  line-height: 1;
+  color: var(--pj-gold-deep);
+  font-weight: 600;
+}
+.pjcr-marks__name {
+  display: block;
+  margin: .35rem 0 .3rem;
+  font-family: var(--pj-sans);
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--pj-ink);
+  font-size: 12px;
+  font-weight: 600;
+}
+.pjcr-marks__note {
+  display: block;
+  line-height: 1.8;
+  font-family: var(--pj-sans);
+  font-size: .92rem;
+  font-weight: 400;
+  color: rgba(14, 15, 18, .85);
+}
+
+/* -------------------------- 5. CLOSING CTA -------------------------- */
+.pjcr-cta { padding-block: clamp(3rem, 6vw, 5.5rem); }
+
+.pjcr-cta__inner {
+  max-width: 46rem;
+  margin-inline: auto;
+  padding: clamp(2rem, 4vw, 3.25rem) clamp(1.5rem, 3vw, 3rem);
+  text-align: center;
+  background: var(--pjcr-panel);
+  border: 1px solid var(--pjcr-rule);
+  border-radius: var(--pj-radius-lg);
+  box-shadow: var(--pj-shadow-sm);
+}
+.pjcr-cta__inner h2 { margin: .7rem 0 1rem; }
+.pjcr-cta__inner p {
+  margin: 0 auto;
+  max-width: 34rem;
+  line-height: 1.95;
+  font-family: var(--pj-sans);
+  font-size: 1rem;
+  font-weight: 400;
+  color: rgba(14, 15, 18, .85);
+}
+.pjcr-cta__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: .9rem;
+  margin-top: clamp(1.5rem, 3vw, 2.2rem);
+}
+
+/* --------------------------- 6. RESPONSIVE -------------------------- */
+@media (max-width: 991.98px) {
+  .pjcr-prose { grid-template-columns: 1fr; }
+  .pjcr-reports__grid { grid-template-columns: 1fr; }
+  /* Narrower viewports need a little more height or the band reads as a
+     sliver, but still shorter than it was. */
+  .pjcr-hero img { aspect-ratio: 2 / 1; max-height: 42vh; }
+}
+
+@media (max-width: 575.98px) {
+  .pjcr-hero img { aspect-ratio: 16 / 10; max-height: 34vh; }
+  .pjcr-rule::after { display: none; }
+}
+
+/* ------------------------ 7. REDUCED MOTION ------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .pjcr-hero img { transition: none; }
+}

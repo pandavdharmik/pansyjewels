@@ -1,0 +1,693 @@
+/* =====================================================================
+   PANSY JEWELS — login.css
+   Page-scoped styles for login.html. Loaded AFTER assets/css/style.css,
+   so the shared header, menu and modals keep their own rules.
+
+   Everything here is namespaced under .pjl- so it cannot leak into the
+   rest of the site.
+
+   Contents
+   --------
+   1. Tokens + page shell
+   2. Left column — animated visual
+   3. Right column — panel frame
+   4. Views (sign in / forgot password)
+   5. Form fields, checkbox, button
+   6. Entrance choreography
+   7. Responsive
+   8. Reduced motion
+   ===================================================================== */
+
+/* ------------------------ 1. TOKENS + SHELL ------------------------- */
+.pjl {
+  --pjl-charcoal:   #111111;
+  --pjl-ink:        #08080a;
+  --pjl-ivory:      #f7f3ec;
+  --pjl-white:      #ffffff;
+  --pjl-gold:       #c5a46d;
+  --pjl-gold-light: #ebd5ac;
+  /* Gold for text. #8e7650 only reached 4.3:1, which is what left the
+     field labels looking washed out; matches --pj-gold-ink site-wide. */
+  --pjl-gold-muted: #7a5c2c;
+
+  /* Derived tints — kept central so a palette change stays one edit */
+  --pjl-rule:       rgba(17, 17, 17, .12);
+  --pjl-rule-soft:  rgba(17, 17, 17, .07);
+  --pjl-muted:      rgba(17, 17, 17, .68);
+  /* Supporting copy, not decoration — .38 left it at 2.5:1 */
+  --pjl-faint:      rgba(17, 17, 17, .6);
+  /* Genuinely decorative: input placeholders and the empty select option */
+  --pjl-hairline:   rgba(17, 17, 17, .42);
+  --pjl-danger:     #a8412f;
+
+  --pjl-serif: "Cormorant Garamond", "Playfair Display", Georgia, serif;
+  --pjl-sans:  "Montserrat", "Inter", "Manrope", system-ui, sans-serif;
+  --pjl-ease:  cubic-bezier(.22, .61, .36, 1);
+
+  background: var(--pjl-ivory);
+  color: var(--pjl-charcoal);
+  display: block;
+}
+
+/* The page runs without the site header and footer, so the split owns the
+   whole viewport. svh keeps mobile browser chrome from cropping it. */
+.pjl__split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.04fr) minmax(0, 1fr);
+  min-height: 100vh;
+  min-height: 100svh;
+}
+
+/* ---------------------- 2. LEFT — ANIMATED VISUAL ------------------- */
+.pjl__visual {
+  position: relative;
+  overflow: hidden;
+  background: var(--pjl-ink);
+  isolation: isolate;
+  min-height: clamp(280px, 42vh, 460px);
+}
+
+/* Stacked, cross-fading photography. Each frame also drifts and scales
+   (Ken Burns) so a still image never feels static. */
+.pjl-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: scale(1.12);
+  transition: opacity 1.6s var(--pjl-ease);
+  will-change: opacity, transform;
+}
+.pjl-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: saturate(.82) contrast(1.04) brightness(.72);
+}
+.pjl-slide.is-active {
+  opacity: 1;
+  animation: pjlKen 7.4s linear forwards;
+}
+@keyframes pjlKen {
+  from { transform: scale(1.12) translate3d(0, 0, 0); }
+  to   { transform: scale(1.24) translate3d(-1.6%, -2%, 0); }
+}
+
+/* Warm vignette so the copy always clears its background */
+.pjl__visual::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(8, 8, 10, .66) 0%, rgba(8, 8, 10, .22) 38%, rgba(8, 8, 10, .88) 100%),
+    radial-gradient(120% 90% at 20% 15%, rgba(197, 164, 109, .16), transparent 62%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* A slow gold sheen that travels across the frame, like light moving
+   over a polished surface. */
+.pjl__sheen {
+  position: absolute;
+  inset: -30% -60%;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(105deg,
+    transparent 38%,
+    rgba(235, 213, 172, .00) 44%,
+    rgba(235, 213, 172, .17) 50%,
+    rgba(255, 255, 255, .10) 53%,
+    rgba(235, 213, 172, .00) 60%,
+    transparent 66%);
+  transform: translate3d(-40%, 0, 0);
+  animation: pjlSheen 8.5s var(--pjl-ease) infinite;
+}
+@keyframes pjlSheen {
+  0%, 62%  { transform: translate3d(-42%, 0, 0); }
+  100%     { transform: translate3d(42%, 0, 0); }
+}
+
+/* Drifting specks of light — the "diamond dust" layer */
+.pjl__dust { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.pjl__dust span {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--pjl-gold-light) 0%, rgba(235, 213, 172, 0) 70%);
+  opacity: 0;
+  animation: pjlDust var(--d, 9s) linear var(--delay, 0s) infinite;
+}
+@keyframes pjlDust {
+  0%   { opacity: 0;   transform: translate3d(0, 24px, 0) scale(.6); }
+  14%  { opacity: .9; }
+  70%  { opacity: .5; }
+  100% { opacity: 0;   transform: translate3d(14px, -120px, 0) scale(1.25); }
+}
+
+/* Thin gold frame inset — the editorial "plate" border */
+.pjl__plate {
+  position: absolute;
+  inset: clamp(1rem, 2.4vw, 2.2rem);
+  z-index: 3;
+  border: 1px solid rgba(235, 213, 172, .26);
+  pointer-events: none;
+}
+.pjl__plate::before,
+.pjl__plate::after {
+  content: "";
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--pjl-gold);
+}
+.pjl__plate::before { top: -1px;    left: -1px;   border-right: 0; border-bottom: 0; }
+.pjl__plate::after  { bottom: -1px; right: -1px;  border-left: 0;  border-top: 0; }
+
+/* Copy over the image */
+.pjl__visual-copy {
+  position: relative;
+  z-index: 4;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 1.1rem;
+  padding: clamp(2.4rem, 5vw, 4.6rem);
+  color: var(--pjl-ivory);
+}
+.pjl__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: .7rem;
+  font-family: var(--pjl-sans);
+  font-size: .725rem; /* .6rem + 2px */
+  font-weight: 600;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--pj-gold);
+}
+.pjl__eyebrow::before {
+  content: "";
+  width: 34px;
+  height: 1px;
+  background: var(--pjl-gold);
+}
+.pjl__visual-title {
+  font-family: var(--pjl-serif);
+  font-weight: 600;
+  font-size: clamp(2.1rem, 3.4vw, 3.5rem);
+  line-height: 1.08;
+  margin: 0;
+  letter-spacing: .005em;
+}
+.pjl__visual-title em {
+  font-style: italic;
+  color: var(--pjl-gold-light);
+}
+.pjl__visual-text {
+  max-width: 44ch;
+  margin: 0;
+  font-family: var(--pjl-sans);
+  font-weight: 300;
+  font-size: .92rem;
+  line-height: 1.75;
+  color: rgba(247, 243, 236, .74);
+}
+
+/* Rotating single-word marquee under the copy */
+.pjl__ticker {
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+  margin-top: .4rem;
+  font-family: var(--pjl-sans);
+  font-size: .62rem;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: rgba(247, 243, 236, .52);
+}
+.pjl__ticker-window {
+  position: relative;
+  height: 1.1em;
+  overflow: hidden;
+  min-width: 13ch;
+}
+.pjl__ticker-window b {
+  position: absolute;
+  inset: 0;
+  font-weight: 400;
+  color: var(--pjl-gold-light);
+  opacity: 0;
+  transform: translateY(100%);
+  transition: opacity .5s var(--pjl-ease), transform .5s var(--pjl-ease);
+}
+.pjl__ticker-window b.is-active {
+  opacity: 1;
+  transform: translateY(0);
+}
+.pjl__ticker-window b.is-out {
+  opacity: 0;
+  transform: translateY(-100%);
+}
+
+/* Slide progress dots */
+.pjl__dots {
+  position: absolute;
+  z-index: 4;
+  right: clamp(2rem, 4vw, 3.6rem);
+  bottom: clamp(2.4rem, 5vw, 4.6rem);
+  display: grid;
+  gap: .55rem;
+}
+.pjl__dots button {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: 1px solid rgba(235, 213, 172, .55);
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  transition: background-color .4s var(--pjl-ease), transform .4s var(--pjl-ease);
+}
+.pjl__dots button.is-active {
+  background: var(--pjl-gold);
+  transform: scale(1.35);
+}
+
+/* ---------------------- 3. RIGHT — PANEL FRAME ---------------------- */
+.pjl__panel {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(2.6rem, 5vw, 5rem) clamp(1.25rem, 4vw, 4.5rem);
+  background: var(--pjl-ivory);
+}
+/* Faint paper texture + gold wash, kept purely decorative */
+.pjl__panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(90% 70% at 85% 0%, rgba(197, 164, 109, .12), transparent 60%);
+  pointer-events: none;
+}
+
+.pjl__card {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+}
+
+/* Brand bar — stands in for the removed site header. Stacked and centred
+   so the mark is always dead-centre on the card, whatever the link below
+   it measures. */
+.pjl__brandbar {
+  display: grid;
+  justify-items: center;
+  gap: .95rem;
+  text-align: center;
+  margin-bottom: clamp(1.8rem, 3.4vw, 2.8rem);
+}
+.pjl__logo { display: block; }
+/* Sized by width now that it is the page's main mark; height follows the
+   205 x 101 artwork on its own. */
+/* The shared artwork is gold, drawn for the dark header. brightness(0)
+   knocks every pixel to black while leaving the transparency intact, so
+   it reads properly on this page's ivory panel. */
+.pjl__logo img {
+  display: block;
+  width: clamp(210px, 26vw, 300px);
+  max-width: 100%;
+  height: auto;
+  filter: brightness(0);
+  transition: opacity .5s var(--pjl-ease);
+}
+.pjl__logo:hover img { opacity: .72; }
+
+.pjl__back {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  font-family: var(--pjl-sans);
+  font-size: .62rem;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--pjl-muted);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color .3s var(--pjl-ease);
+}
+.pjl__back::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 0;
+  height: 1px;
+  background: var(--pjl-gold);
+  transition: width .4s var(--pjl-ease);
+}
+.pjl__back:hover { color: var(--pjl-gold-muted); }
+.pjl__back:hover::after { width: 100%; }
+
+/* --------------------------- 4. VIEWS ------------------------------- */
+/* Both views live in the same stack. Only one is mounted at a time, so
+   the form never jumps to the tallest of the two. */
+.pjl-view { display: none; }
+.pjl-view.is-active { display: block; animation: pjlViewIn .55s var(--pjl-ease) both; }
+@keyframes pjlViewIn {
+  from { opacity: 0; transform: translate3d(0, 14px, 0); }
+  to   { opacity: 1; transform: none; }
+}
+
+.pjl-view__head { margin-bottom: clamp(1.8rem, 3.4vw, 2.6rem); }
+.pjl-view__title {
+  font-family: var(--pjl-serif);
+  font-weight: 600;
+  font-size: clamp(2.1rem, 3.6vw, 3rem);
+  line-height: 1.1;
+  margin: .7rem 0 .8rem;
+}
+.pjl-view__title em { font-style: italic; color: var(--pjl-gold-muted); }
+.pjl-view__sub {
+  margin: 0;
+  max-width: 40ch;
+  font-family: var(--pjl-sans);
+  font-weight: 300;
+  font-size: .9rem;
+  line-height: 1.7;
+  color: var(--pjl-muted);
+}
+.pjl-view__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: .7rem;
+  font-family: var(--pjl-sans);
+  font-size: .725rem; /* .6rem + 2px */
+  font-weight: 600;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--pj-gold);
+}
+.pjl-view__eyebrow::before { content: ""; width: 28px; height: 1px; background: var(--pjl-gold); }
+
+/* ------------------- 5. FIELDS / CHECKBOX / BUTTON ------------------ */
+.pjl-field { margin-bottom: 1.35rem; }
+/* Matched to .pjc-field label on the contact page: .6rem at .26em was too
+   small and too stretched to read, whatever colour it carried. */
+.pjl-field__label {
+  display: block;
+  margin-bottom: .55rem;
+  font-family: var(--pjl-sans);
+  font-weight: 500;
+  font-size: .7rem;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--pjl-gold-muted);
+}
+
+/* Icon box + input, mirroring the reference layout but in the house style */
+.pjl-field__row {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid var(--pjl-rule);
+  background: var(--pjl-white);
+  transition: border-color .35s var(--pjl-ease), box-shadow .35s var(--pjl-ease);
+}
+.pjl-field__icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  flex: 0 0 52px;
+  border-right: 1px solid var(--pjl-rule-soft);
+  color: var(--pjl-gold-muted);
+  font-size: 1rem;
+  transition: color .35s var(--pjl-ease), background-color .35s var(--pjl-ease);
+}
+.pjl-field__row input {
+  flex: 1 1 auto;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  padding: 1rem 1.05rem;
+  font-family: var(--pjl-sans);
+  font-weight: 300;
+  font-size: .95rem;
+  color: var(--pjl-charcoal);
+  border-radius: 0;
+}
+.pjl-field__row input::placeholder { color: var(--pjl-hairline); }
+.pjl-field__row input:focus { outline: none; }
+/* Chrome's autofill repaint would otherwise wipe the ivory ground */
+.pjl-field__row input:-webkit-autofill {
+  -webkit-text-fill-color: var(--pjl-charcoal);
+  -webkit-box-shadow: 0 0 0 40px var(--pjl-white) inset;
+}
+
+.pjl-field.is-focus .pjl-field__row {
+  border-color: var(--pjl-gold);
+  box-shadow: 0 14px 40px -26px rgba(197, 164, 109, .85);
+}
+.pjl-field.is-focus .pjl-field__icon {
+  color: var(--pjl-charcoal);
+  background: rgba(197, 164, 109, .16);
+}
+
+.pjl-field.is-invalid .pjl-field__row { border-color: rgba(168, 65, 47, .5); }
+.pjl-field.is-invalid .pjl-field__icon { color: var(--pjl-danger); }
+
+.pjl-field__error {
+  margin: .45rem 0 0;
+  min-height: 1rem;
+  font-family: var(--pjl-sans);
+  font-size: .72rem;
+  letter-spacing: .02em;
+  color: var(--pjl-danger);
+}
+
+/* Show / hide password */
+.pjl-field__toggle {
+  flex: 0 0 48px;
+  border: 0;
+  border-left: 1px solid var(--pjl-rule-soft);
+  background: transparent;
+  color: var(--pjl-faint);
+  font-size: .95rem;
+  cursor: pointer;
+  transition: color .3s var(--pjl-ease);
+}
+.pjl-field__toggle:hover { color: var(--pjl-gold-muted); }
+
+/* Remember me + inline forgot link */
+.pjl-row-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.6rem;
+}
+
+.pjl-check {
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+  cursor: pointer;
+  font-family: var(--pjl-sans);
+  font-weight: 300;
+  font-size: .82rem;
+  color: var(--pjl-muted);
+  user-select: none;
+}
+.pjl-check input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+.pjl-check__box {
+  width: 17px;
+  height: 17px;
+  flex: 0 0 17px;
+  border: 1px solid var(--pjl-rule);
+  background: var(--pjl-white);
+  display: grid;
+  place-items: center;
+  transition: border-color .3s var(--pjl-ease), background-color .3s var(--pjl-ease);
+}
+.pjl-check__box::after {
+  content: "";
+  width: 9px;
+  height: 5px;
+  border-left: 1.5px solid var(--pjl-ink);
+  border-bottom: 1.5px solid var(--pjl-ink);
+  transform: rotate(-45deg) scale(.4);
+  opacity: 0;
+  transition: opacity .25s var(--pjl-ease), transform .25s var(--pjl-ease);
+  margin-top: -2px;
+}
+.pjl-check input:checked + .pjl-check__box {
+  background: var(--pjl-gold);
+  border-color: var(--pjl-gold);
+}
+.pjl-check input:checked + .pjl-check__box::after { opacity: 1; transform: rotate(-45deg) scale(1); }
+.pjl-check input:focus-visible + .pjl-check__box { outline: 2px solid var(--pjl-gold); outline-offset: 2px; }
+
+/* Text link — used for "Forgot password" and "Back to log-in" */
+.pjl-link {
+  position: relative;
+  border: 0;
+  padding: 0;
+  background: none;
+  font-family: var(--pjl-sans);
+  font-size: .78rem;
+  letter-spacing: .06em;
+  color: var(--pjl-gold-muted);
+  cursor: pointer;
+  text-decoration: none;
+  transition: color .3s var(--pjl-ease);
+}
+.pjl-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  width: 0;
+  height: 1px;
+  background: var(--pjl-gold);
+  transition: width .4s var(--pjl-ease);
+}
+.pjl-link:hover { color: var(--pjl-charcoal); }
+.pjl-link:hover::after { width: 100%; }
+
+/* Primary submit — gold plate with an ink wipe on hover */
+.pjl-submit {
+  position: relative;
+  width: 100%;
+  border: 0;
+  padding: 1.1rem 1.6rem;
+  overflow: hidden;
+  background: var(--pj-gold, #c9a66b);
+  color: var(--pjl-ink);
+  font-family: var(--pjl-sans);
+  font-size: .68rem;
+  font-weight: 500;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color .45s var(--pjl-ease), box-shadow .45s var(--pjl-ease);
+}
+.pjl-submit span { position: relative; z-index: 2; display: inline-flex; align-items: center; gap: .7rem; }
+.pjl-submit::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--pjl-ink);
+  transform: translateY(101%);
+  transition: transform .5s var(--pjl-ease);
+  z-index: 1;
+}
+.pjl-submit:hover { color: var(--pjl-gold-light); box-shadow: 0 22px 50px -28px rgba(197, 164, 109, .9); }
+.pjl-submit:hover::after { transform: translateY(0); }
+.pjl-submit:active { transform: translateY(1px); }
+.pjl-submit[disabled] { opacity: .6; pointer-events: none; }
+
+/* Divider + footer line under the form */
+.pjl-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.8rem 0 1.4rem;
+  font-family: var(--pjl-sans);
+  font-size: .6rem;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--pjl-faint);
+}
+.pjl-divider::before,
+.pjl-divider::after { content: ""; flex: 1; height: 1px; background: var(--pjl-rule); }
+
+.pjl-foot {
+  margin: 0;
+  text-align: center;
+  font-family: var(--pjl-sans);
+  font-weight: 300;
+  font-size: .85rem;
+  color: var(--pjl-muted);
+}
+.pjl-note {
+  margin: 2.4rem 0 0;
+  padding-top: 1.4rem;
+  border-top: 1px solid var(--pjl-rule-soft);
+  font-family: var(--pjl-sans);
+  font-weight: 300;
+  font-size: .72rem;
+  line-height: 1.7;
+  color: var(--pjl-faint);
+}
+.pjl-note a { color: var(--pjl-gold-muted); text-decoration: none; }
+.pjl-note a:hover { text-decoration: underline; }
+
+/* Success confirmation after a reset request */
+.pjl-success {
+  display: none;
+  align-items: flex-start;
+  gap: .85rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.15rem;
+  border: 1px solid rgba(197, 164, 109, .45);
+  background: rgba(197, 164, 109, .12);
+  font-family: var(--pjl-sans);
+  font-weight: 300;
+  font-size: .85rem;
+  line-height: 1.6;
+  color: var(--pjl-charcoal);
+}
+.pjl-success.is-on { display: flex; animation: pjlViewIn .5s var(--pjl-ease) both; }
+.pjl-success i { color: var(--pjl-gold-muted); font-size: 1.05rem; line-height: 1.5; }
+
+/* --------------------- 6. ENTRANCE CHOREOGRAPHY --------------------- */
+/* Each row lifts in on load, one after another. */
+.pjl-stagger > * {
+  opacity: 0;
+  transform: translate3d(0, 16px, 0);
+  animation: pjlRise .7s var(--pjl-ease) forwards;
+}
+.pjl-stagger > *:nth-child(1) { animation-delay: .06s; }
+.pjl-stagger > *:nth-child(2) { animation-delay: .14s; }
+.pjl-stagger > *:nth-child(3) { animation-delay: .22s; }
+.pjl-stagger > *:nth-child(4) { animation-delay: .30s; }
+.pjl-stagger > *:nth-child(5) { animation-delay: .38s; }
+.pjl-stagger > *:nth-child(6) { animation-delay: .46s; }
+.pjl-stagger > *:nth-child(7) { animation-delay: .54s; }
+@keyframes pjlRise {
+  to { opacity: 1; transform: none; }
+}
+
+/* ------------------------- 7. RESPONSIVE ---------------------------- */
+@media (max-width: 1099.98px) {
+  .pjl__split { grid-template-columns: 1fr; }
+  .pjl__visual { min-height: clamp(320px, 46vh, 460px); }
+  .pjl__dots { bottom: auto; top: clamp(2rem, 5vw, 3rem); }
+}
+
+@media (max-width: 575.98px) {
+  .pjl__visual { min-height: 260px; }
+  .pjl__visual-text { display: none; }
+  .pjl__plate { inset: .85rem; }
+  .pjl-field__icon { width: 46px; flex-basis: 46px; }
+  .pjl-row-between { gap: .75rem; }
+}
+
+/* ----------------------- 8. REDUCED MOTION -------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .pjl-slide.is-active { animation: none; transform: scale(1.02); }
+  .pjl__sheen,
+  .pjl__dust { display: none; }
+  .pjl-view.is-active,
+  .pjl-success.is-on { animation: none; }
+  .pjl-stagger > * { opacity: 1; transform: none; animation: none; }
+  .pjl__ticker-window b { transition: none; }
+}

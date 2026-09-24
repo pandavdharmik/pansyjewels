@@ -1,0 +1,492 @@
+/* =====================================================================
+   PANSY JEWELS — event.css
+   Page-scoped styles for event.html. Loaded AFTER assets/css/style.css,
+   so the shared header, menu, footer and modals keep their own rules.
+
+   Everything here is namespaced under .pjev- to guarantee it cannot leak
+   into the rest of the site.
+
+   Contents
+   --------
+   1. Tokens
+   2. Page shell + breadcrumb
+   3. Intro
+   4. Gallery grid
+   5. Lightbox
+   6. Upcoming strip
+   7. Scroll reveal
+   8. Responsive
+   9. Reduced motion
+   ===================================================================== */
+
+/* ----------------------------- 1. TOKENS ---------------------------- */
+.pjev {
+  --pjev-charcoal:   #111111;
+  --pjev-ink:        #08080a;
+  --pjev-ivory:      #f7f3ec;
+  --pjev-gold:       #c5a46d;
+  /* Gold for text on ivory. #8e7650 only reached 3.8:1, which is what made
+     the eyebrows and the italic accent look washed out; this matches the
+     --pj-gold-ink used site-wide for the same job. */
+  --pjev-gold-muted: #7a5c2c;
+  --pjev-white:      #ffffff;
+
+  /* Derived tints — kept as variables so a palette change stays central */
+  --pjev-rule:       rgba(17, 17, 17, .12);
+  --pjev-rule-soft:  rgba(17, 17, 17, .07);
+  --pjev-muted:      rgba(17, 17, 17, .66);
+  /* Small caps labels, not decoration — .38 left them at 2.4:1 */
+  --pjev-faint:      rgba(17, 17, 17, .6);
+  /* The one genuinely decorative tint: breadcrumb separators */
+  --pjev-hairline:   rgba(17, 17, 17, .35);
+
+  --pjev-serif: "Cormorant Garamond", "Playfair Display", Georgia, serif;
+  --pjev-sans:  "Montserrat", "Inter", "Manrope", system-ui, sans-serif;
+
+  --pjev-ease:   cubic-bezier(.22, .61, .36, 1);
+  --pjev-gutter: clamp(1.25rem, 4vw, 4.5rem);
+
+  background: var(--pjev-ivory);
+  color: var(--pjev-charcoal);
+}
+
+/* ---------------------- 2. PAGE SHELL + BREADCRUMB ------------------ */
+.pjev__shell {
+  width: 100%;
+  max-width: 1560px;
+  margin-inline: auto;
+  padding-inline: var(--pjev-gutter);
+}
+
+.pjev__crumb {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  padding-top: clamp(7rem, 12vh, 9.5rem);
+  font-family: var(--pjev-sans);
+  font-size: calc(.62rem + 1px);
+  font-weight: 500;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: rgba(17, 17, 17, .85);
+}
+/* Matches .pj-crumb in style.css: dark trail at 500, lighter
+   separators, current page in deep gold at 600. */
+.pjev__crumb a { color: rgba(17, 17, 17, .85); text-decoration: none; transition: color .3s var(--pjev-ease); }
+.pjev__crumb a:hover { color: var(--pjev-gold-muted); }
+.pjev__crumb span[aria-current] { color: var(--pjev-gold-muted); font-weight: 600; }
+.pjev__crumb span[aria-hidden] { color: rgba(17, 17, 17, .45); }
+
+/* ----------------------------- 3. INTRO ----------------------------- */
+.pjev-intro { padding: clamp(2.6rem, 5vw, 4rem) 0 clamp(2rem, 4vw, 3rem); }
+
+.pjev-intro__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: clamp(1.6rem, 4vw, 4rem);
+  align-items: end;
+}
+
+.pjev-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: .7rem;
+  font-family: var(--pjev-sans);
+  font-size: .725rem; /* .6rem + 2px */
+  font-weight: 600;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--pj-gold);
+}
+/* currentColor, as .pj-eyebrow does site-wide, so the dash tracks the
+   label's colour instead of staying pale gold beside darker text. */
+.pjev-eyebrow::before { content: ""; width: 30px; height: 1px; background: currentColor; opacity: .55; }
+
+.pjev-title {
+  font-family: var(--pjev-serif);
+  font-weight: 600;
+  font-size: clamp(2.5rem, 6vw, 4.6rem);
+  line-height: 1.04;
+  letter-spacing: .005em;
+  /* Opens the intro now, so no top margin — that 1rem only existed to
+     clear the eyebrow that used to sit above it. */
+  margin: 0;
+}
+.pjev-title em { font-style: italic; color: var(--pjev-gold-muted); }
+
+.pjev-intro__text {
+  margin: 0;
+  font-family: var(--pjev-sans);
+  line-height: 1.85;
+  font-weight: 400;
+  font-size: clamp(1rem, .3vw + .92rem, 1.08rem);
+  color: rgba(17, 17, 17, .85);
+}
+
+/* A quiet stat row rather than a second paragraph of prose */
+.pjev-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(1.6rem, 4vw, 3.4rem);
+  margin-top: clamp(2rem, 4vw, 3rem);
+  padding-top: clamp(1.4rem, 3vw, 2rem);
+  border-top: 1px solid var(--pjev-rule-soft);
+}
+.pjev-stats__n {
+  display: block;
+  font-family: var(--pjev-serif);
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  line-height: 1;
+  color: var(--pjev-charcoal);
+  font-weight: 600;
+}
+.pjev-stats__l {
+  display: block;
+  margin-top: .55rem;
+  font-family: var(--pjev-sans);
+  font-size: .76rem;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: rgba(17, 17, 17, .75);
+}
+
+/* -------------------------- 4. GALLERY GRID ------------------------- */
+.pjev-gallery { padding-bottom: clamp(4rem, 8vw, 7rem); }
+
+.pjev-gallery__head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: clamp(1.6rem, 3vw, 2.4rem);
+}
+.pjev-gallery__head h2 {
+  font-family: var(--pjev-serif);
+  font-weight: 600;
+  font-size: clamp(1.8rem, 3.2vw, 2.8rem);
+  line-height: 1.1;
+  margin: .8rem 0 0;
+}
+.pjev-gallery__hint {
+  margin: 0;
+  font-family: var(--pjev-sans);
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(17, 17, 17, .72);
+}
+
+/* An editorial mosaic: the first frame runs wide, the rest fill in
+   around it. Every tile keeps a fixed ratio so the rhythm holds. */
+.pjev-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(.6rem, 1.4vw, 1.1rem);
+}
+.pjev-tile {
+  position: relative;
+  display: block;
+  grid-column: span 2;
+  aspect-ratio: 16 / 11;
+  overflow: hidden;
+  background: #101114;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  color: inherit;
+  isolation: isolate;
+}
+.pjev-tile--wide { grid-column: span 4; aspect-ratio: 21 / 9; }
+
+.pjev-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transform: scale(1.02);
+  transition: transform 1.1s var(--pjev-ease), filter .7s var(--pjev-ease);
+  filter: saturate(.92) brightness(.92);
+}
+.pjev-tile:hover img,
+.pjev-tile:focus-visible img { transform: scale(1.08); filter: saturate(1) brightness(1); }
+
+/* Scrim only at the foot, so the caption reads without dulling the image */
+.pjev-tile::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 62%;
+  background: linear-gradient(180deg, transparent, rgba(8, 8, 10, .82));
+  opacity: .9;
+  transition: opacity .5s var(--pjev-ease);
+  pointer-events: none;
+}
+.pjev-tile:hover::after { opacity: 1; }
+
+.pjev-tile__cap {
+  position: absolute;
+  inset: auto 0 0 0;
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: clamp(1rem, 2.2vw, 1.8rem);
+  text-align: left;
+  pointer-events: none;
+}
+/* Same reasoning as .pj-cat__index in style.css: over photography the
+   label runs in the lighter gold. This one keeps a shadow behind it. */
+.pjev-tile__meta {
+  display: block;
+  font-family: var(--pjev-sans);
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: #ebd5ac;
+  text-shadow: 0 1px 12px rgba(8, 8, 10, .95), 0 1px 3px rgba(8, 8, 10, .8);
+  margin-bottom: .45rem;
+  font-size: 11px;
+  font-weight: 600;
+}
+.pjev-tile__name {
+  display: block;
+  line-height: 1.15;
+  color: #f7f3ec;
+  text-shadow: 0 2px 18px rgba(8, 8, 10, .9), 0 1px 3px rgba(8, 8, 10, .7);
+  font-family: var(--pjev-sans);
+  font-weight: 600;
+  font-size: clamp(1rem, 1.4vw, 1.25rem);
+}
+
+/* Expand affordance — the only thing that says "this opens" */
+.pjev-tile__zoom {
+  flex: 0 0 auto;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(235, 213, 172, .5);
+  color: #f3e6cc;
+  font-size: .85rem;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity .45s var(--pjev-ease), transform .45s var(--pjev-ease),
+              background-color .45s var(--pjev-ease), color .45s var(--pjev-ease);
+}
+.pjev-tile:hover .pjev-tile__zoom,
+.pjev-tile:focus-visible .pjev-tile__zoom { opacity: 1; transform: none; }
+.pjev-tile:hover .pjev-tile__zoom { background: var(--pjev-gold); color: var(--pjev-ink); border-color: var(--pjev-gold); }
+
+.pjev-tile:focus-visible { outline: 2px solid var(--pjev-gold); outline-offset: 3px; }
+
+/* --------------------------- 5. LIGHTBOX ---------------------------- */
+.pjev-lb {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: none;
+  background: rgba(6, 6, 8, .94);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.pjev-lb.is-open { display: block; animation: pjeFade .35s var(--pjev-ease) both; }
+@keyframes pjeFade { from { opacity: 0; } to { opacity: 1; } }
+
+.pjev-lb__stage {
+  position: absolute;
+  inset: clamp(3.6rem, 8vh, 6rem) clamp(1rem, 6vw, 6rem) clamp(4.2rem, 9vh, 6rem);
+  display: grid;
+  place-items: center;
+}
+.pjev-lb__fig { margin: 0; max-width: 100%; max-height: 100%; }
+.pjev-lb__img {
+  display: block;
+  max-width: 100%;
+  max-height: calc(100vh - 11rem);
+  object-fit: contain;
+  box-shadow: 0 50px 120px -50px rgba(0, 0, 0, .9);
+}
+/* Each change of slide re-runs this, so the swap reads as a move */
+.pjev-lb__fig.is-swap { animation: pjeSwap .45s var(--pjev-ease) both; }
+@keyframes pjeSwap {
+  from { opacity: 0; transform: scale(.985) translate3d(0, 10px, 0); }
+  to   { opacity: 1; transform: none; }
+}
+
+.pjev-lb__cap {
+  margin-top: 1.1rem;
+  text-align: center;
+  font-family: var(--pjev-sans);
+  font-weight: 400;
+  font-size: .92rem;
+  color: rgba(247, 243, 236, .88);
+}
+.pjev-lb__cap b {
+  display: block;
+  color: #f7f3ec;
+  margin-bottom: .2rem;
+  font-family: var(--pjev-sans);
+  font-weight: 600;
+  font-size: 1.12rem;
+}
+
+/* Controls */
+.pjev-lb__btn {
+  position: absolute;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border: 1px solid rgba(235, 213, 172, .28);
+  background: rgba(8, 8, 10, .5);
+  color: #f3e6cc;
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition: background-color .35s var(--pjev-ease), color .35s var(--pjev-ease),
+              border-color .35s var(--pjev-ease);
+}
+.pjev-lb__btn:hover {
+  background: var(--pjev-gold);
+  border-color: var(--pjev-gold);
+  color: var(--pjev-ink);
+}
+.pjev-lb__btn:focus-visible { outline: 2px solid var(--pjev-gold); outline-offset: 3px; }
+
+.pjev-lb__close { top: clamp(1rem, 3vh, 2rem); right: clamp(1rem, 3vw, 2.4rem); }
+.pjev-lb__prev  { left: clamp(.6rem, 2vw, 2.4rem);  top: 50%; margin-top: -26px; }
+.pjev-lb__next  { right: clamp(.6rem, 2vw, 2.4rem); top: 50%; margin-top: -26px; }
+
+.pjev-lb__count {
+  position: absolute;
+  top: clamp(1rem, 3vh, 2rem);
+  left: clamp(1rem, 3vw, 2.4rem);
+  z-index: 2;
+  font-family: var(--pjev-sans);
+  letter-spacing: .26em;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(247, 243, 236, .82);
+}
+.pjev-lb__count b { color: var(--pjev-gold); font-weight: 600; }
+
+/* Thumbnail rail along the foot */
+.pjev-lb__rail {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: clamp(.9rem, 2.4vh, 1.6rem);
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  gap: .5rem;
+  padding-inline: 1rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.pjev-lb__rail::-webkit-scrollbar { display: none; }
+.pjev-lb__rail button {
+  flex: 0 0 auto;
+  width: 64px;
+  height: 42px;
+  padding: 0;
+  border: 1px solid transparent;
+  background: none;
+  opacity: .42;
+  cursor: pointer;
+  transition: opacity .35s var(--pjev-ease), border-color .35s var(--pjev-ease);
+}
+.pjev-lb__rail button img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pjev-lb__rail button.is-active { opacity: 1; border-color: var(--pjev-gold); }
+.pjev-lb__rail button:hover { opacity: .85; }
+
+/* Locks the page behind the overlay without the layout shifting */
+body.pjev-lb-open { overflow: hidden; }
+
+/* ------------------------- 6. UPCOMING STRIP ------------------------ */
+.pjev-next {
+  background: var(--pjev-ink);
+  color: var(--pjev-ivory);
+  padding: clamp(3.4rem, 7vw, 6rem) 0;
+}
+.pjev-next .pjev-eyebrow { color: var(--pjev-gold); }
+.pjev-next__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+  gap: clamp(1.6rem, 4vw, 4rem);
+  align-items: start;
+}
+.pjev-next h2 {
+  font-family: var(--pjev-serif);
+  font-weight: 600;
+  font-size: clamp(1.9rem, 3.4vw, 3rem);
+  line-height: 1.08;
+  margin: 1rem 0 0;
+}
+.pjev-next h2 em { font-style: italic; color: var(--pjev-gold); }
+
+.pjev-next__list { display: grid; gap: 0; }
+.pjev-next__row {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr) auto;
+  gap: clamp(.8rem, 2vw, 2rem);
+  align-items: baseline;
+  padding: 1.2rem 0;
+  border-top: 1px solid rgba(247, 242, 234, .12);
+}
+.pjev-next__row:last-child { border-bottom: 1px solid rgba(247, 242, 234, .12); }
+.pjev-next__date {
+  font-family: var(--pjev-sans);
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--pjev-gold);
+  font-size: 12px;
+  font-weight: 600;
+}
+.pjev-next__name {
+  font-family: var(--pjev-sans);
+  font-weight: 600;
+  font-size: clamp(1rem, 1.4vw, 1.2rem);
+}
+.pjev-next__where {
+  font-family: var(--pjev-sans);
+  white-space: nowrap;
+  font-weight: 400;
+  font-size: .9rem;
+  color: rgba(247, 242, 234, .85);
+}
+
+/* -------------------------- 7. SCROLL REVEAL ------------------------ */
+.pjev-reveal {
+  opacity: 0;
+  transform: translate3d(0, 26px, 0);
+  transition: opacity .9s var(--pjev-ease), transform .9s var(--pjev-ease);
+}
+.pjev-reveal.is-in { opacity: 1; transform: none; }
+
+/* --------------------------- 8. RESPONSIVE -------------------------- */
+@media (max-width: 991.98px) {
+  .pjev-intro__grid,
+  .pjev-next__grid { grid-template-columns: 1fr; align-items: start; }
+}
+
+@media (max-width: 767.98px) {
+  .pjev-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pjev-tile { grid-column: span 2; aspect-ratio: 4 / 3; }
+  .pjev-tile--wide { aspect-ratio: 16 / 10; }
+  .pjev-lb__prev, .pjev-lb__next { width: 44px; height: 44px; margin-top: -22px; }
+  .pjev-next__row { grid-template-columns: 1fr; gap: .35rem; }
+  .pjev-next__where { white-space: normal; }
+}
+
+/* ------------------------- 9. REDUCED MOTION ------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  .pjev-reveal { opacity: 1; transform: none; transition: none; }
+  .pjev-tile img { transition: none; }
+  .pjev-tile:hover img { transform: scale(1.02); }
+  .pjev-lb.is-open,
+  .pjev-lb__fig.is-swap { animation: none; }
+}

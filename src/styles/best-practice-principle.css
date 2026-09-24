@@ -1,0 +1,209 @@
+/* =====================================================================
+   PANSY JEWELS — best-practice-principle.css
+   Page-scoped styles for best-practice-principle.html. Loaded AFTER
+   assets/css/style.css, so the shared header, menu, footer and modals
+   keep their own rules.
+
+   Light page, warm champagne ground and gold rules, matching the other
+   Education pages.
+
+   Everything here is namespaced under .pjb- so it cannot leak into the
+   rest of the site.
+
+   Contents
+   --------
+   1. Page ground + tokens
+   2. Masthead + hero photograph
+   3. Intro prose
+   4. Numbered principles
+   5. Closing CTA
+   6. Responsive
+   7. Reduced motion
+   ===================================================================== */
+
+/* ---------------------- 1. PAGE GROUND + TOKENS --------------------- */
+.pjb {
+  --pjb-body:  rgba(14, 15, 18, .75);
+  --pjb-rule:  rgba(142, 110, 60, .22);
+  --pjb-panel: rgba(255, 255, 255, .55);
+
+  background:
+    radial-gradient(120% 70% at 85% 0%, rgba(243, 230, 204, .8) 0%, rgba(243, 230, 204, 0) 62%),
+    linear-gradient(180deg, var(--pj-ivory) 0%, var(--pj-ivory-2) 100%);
+  color: var(--pj-ink);
+}
+
+/* ------------------ 2. MASTHEAD + HERO PHOTOGRAPH ------------------- */
+.pjb-intro {
+  padding-top: clamp(7rem, 12vh, 9.5rem);
+  padding-bottom: clamp(2.5rem, 5vw, 4rem);
+}
+
+.pjb-masthead { max-width: 52rem; }
+
+.pjb-title {
+  font-family: var(--pj-serif);
+  font-weight: 600;
+  line-height: 1.02;
+  font-size: clamp(2.4rem, 5.6vw, 4.8rem);
+  /* Opens the masthead now, so no top margin — that .6rem only existed
+     to clear the eyebrow that used to sit above it. */
+  margin: 0;
+}
+.pjb-title em { font-style: italic; color: var(--pj-gold-deep); }
+
+.pjb-hero {
+  margin: clamp(2rem, 4vw, 3rem) 0 0;
+  overflow: hidden;
+  border-radius: var(--pj-radius-lg);
+  box-shadow: var(--pj-shadow-md);
+}
+.pjb-hero img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 2 / 1;
+  object-fit: cover;
+}
+
+/* --------------------------- 3. INTRO PROSE ------------------------- */
+/* Full shell width — the copy runs edge to edge like the hero above it,
+   rather than sitting in a narrower measure. */
+.pjb-prose { margin-top: clamp(1.8rem, 3.5vw, 2.6rem); }
+.pjb-prose p {
+  margin-bottom: 1.1rem;
+  line-height: 1.95;
+  font-family: var(--pj-sans);
+  font-size: 1rem;
+  font-weight: 400;
+  color: rgba(14, 15, 18, .85);
+}
+.pjb-prose p:last-child { margin-bottom: 0; }
+
+/* The opening statement carries the page, so it is set larger. */
+.pjb-prose .pjb-prose__lede {
+  line-height: 1.6;
+  font-family: var(--pj-sans);
+  font-size: clamp(1.08rem, 1.7vw, 1.3rem);
+  font-weight: 500;
+  font-style: normal;
+  color: var(--pj-ink);
+}
+
+/* ----------------------- 4. NUMBERED PRINCIPLES --------------------- */
+.pjb-principle { scroll-margin-top: 5rem; }
+.pjb-principle + .pjb-principle { padding-top: 0; }
+
+/* The number rides above the title as a gold eyebrow — the same component
+   the rest of the site uses — and the title carries a short gold stroke of
+   its own. No rule runs off to the edge of the shell. */
+.pjb-principle__head { margin-bottom: clamp(1.4rem, 2.6vw, 2.1rem); }
+
+.pjb-principle__eyebrow { margin-bottom: .75rem; }
+
+.pjb-principle__title {
+  margin: 0;
+  font-family: var(--pj-serif);
+  font-weight: 600;
+  font-size: clamp(1.7rem, 3.6vw, 2.8rem);
+  line-height: 1.1;
+  letter-spacing: .01em;
+  color: var(--pj-ink);
+}
+.pjb-principle__title::after {
+  content: "";
+  display: block;
+  width: 3.5rem;
+  height: 1px;
+  margin-top: .9rem;
+  background: var(--pj-gold);
+}
+
+/* Matches the intro: the clause lists run the full shell width too. */
+.pjb-principle__body { max-width: none; }
+
+.pjb-principle__intro {
+  margin: 0 0 clamp(1.2rem, 2.2vw, 1.7rem);
+  line-height: 1.95;
+  font-family: var(--pj-sans);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--pj-ink);
+}
+
+/* Clause list: a gold rule down the left, a small diamond per item. */
+.pjb-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: clamp(.85rem, 1.6vw, 1.15rem);
+}
+.pjb-list li {
+  position: relative;
+  padding-left: 1.6rem;
+  line-height: 1.9;
+  font-family: var(--pj-sans);
+  font-size: 1rem;
+  font-weight: 400;
+  color: rgba(14, 15, 18, .85);
+}
+.pjb-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .72em;
+  width: 6px; height: 6px;
+  background: var(--pj-gold);
+  transform: rotate(45deg);
+}
+
+/* -------------------------- 5. CLOSING CTA -------------------------- */
+.pjb-cta { padding-block: clamp(3rem, 6vw, 5.5rem); }
+
+.pjb-cta__inner {
+  max-width: 46rem;
+  margin-inline: auto;
+  padding: clamp(2rem, 4vw, 3.25rem) clamp(1.5rem, 3vw, 3rem);
+  text-align: center;
+  background: var(--pjb-panel);
+  border: 1px solid var(--pjb-rule);
+  border-radius: var(--pj-radius-lg);
+  box-shadow: var(--pj-shadow-sm);
+}
+.pjb-cta__inner h2 { margin: .7rem 0 1rem; }
+.pjb-cta__inner p {
+  margin: 0 auto;
+  max-width: 36rem;
+  line-height: 1.95;
+  font-family: var(--pj-sans);
+  font-size: 1rem;
+  font-weight: 400;
+  color: rgba(14, 15, 18, .85);
+}
+.pjb-cta__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: .9rem;
+  margin-top: clamp(1.5rem, 3vw, 2.2rem);
+}
+
+/* --------------------------- 6. RESPONSIVE -------------------------- */
+@media (max-width: 991.98px) {
+  .pjb-hero img { aspect-ratio: 16 / 9; }
+}
+
+@media (max-width: 575.98px) {
+  .pjb-hero img { aspect-ratio: 4 / 3; }
+  .pjb-list li { padding-left: 1.3rem;
+  font-family: var(--pj-sans);
+  font-size: 1rem;
+  font-weight: 400;
+  color: rgba(14, 15, 18, .85);
+}
+}
+
+/* ------------------------ 7. REDUCED MOTION ------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .pjb-hero img { transition: none; }
+}

@@ -1,0 +1,183 @@
+/* =====================================================================
+   PANSY JEWELS — register.css
+   Page-scoped styles for register.html. Loaded AFTER assets/css/login.css,
+   which already owns the split layout, the animated visual, the fields,
+   the checkbox and the submit button. Only the extras the register page
+   adds on top live here:
+
+   1. Wider card + two-column field grid
+   2. Select control
+   3. Terms checkbox
+   4. Benefits block
+   5. Responsive
+   ===================================================================== */
+
+/* -------------------- 1. WIDER CARD + FIELD GRID -------------------- */
+/* Ten fields would run absurdly long in the login card's single column,
+   so the register panel gets a wider card and pairs its short fields. */
+.pjl__card--wide { max-width: 620px; }
+
+/* The visual column can afford to give up room to the taller form. */
+.pjl__split--register { grid-template-columns: minmax(0, .82fr) minmax(0, 1fr); }
+
+/* The form starts at the top rather than floating in the middle of a
+   very tall column. */
+.pjl__panel--register {
+  align-items: flex-start;
+  padding-block: clamp(2.6rem, 5vw, 4.4rem);
+}
+
+/* ------------------ SPLIT SCROLL (DESKTOP ONLY) --------------------- */
+/* The visual is pinned to the viewport and the form scrolls inside its
+   own column, so the photography never slides away mid-form. Below the
+   stacked breakpoint the two columns sit on top of each other, where a
+   pinned panel makes no sense, so the page scrolls normally there. */
+@media (min-width: 1100px) {
+  /* A fixed height, not min-height: the row must be exactly one screen
+     for the panel to have something to overflow against. */
+  .pjl__split--register {
+    height: 100vh;
+    height: 100svh;
+    overflow: hidden;
+  }
+
+  /* Stretches to the full row and stays put — the page itself no longer
+     scrolls, so nothing can move it. */
+  .pjl__split--register .pjl__visual {
+    height: 100vh;
+    height: 100svh;
+  }
+
+  .pjl__panel--register {
+    height: 100%;
+    min-height: 0;          /* lets the grid item shrink so it can scroll */
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  /* On-brand scrollbar for the one column that now scrolls */
+  .pjl__panel--register { scrollbar-width: thin; scrollbar-color: var(--pjl-gold) transparent; }
+  .pjl__panel--register::-webkit-scrollbar { width: 6px; }
+  .pjl__panel--register::-webkit-scrollbar-track { background: transparent; }
+  .pjl__panel--register::-webkit-scrollbar-thumb {
+    background: rgba(197, 164, 109, .55);
+    border-radius: 3px;
+  }
+  .pjl__panel--register::-webkit-scrollbar-thumb:hover { background: var(--pjl-gold); }
+}
+
+.pjr-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 1.1rem;
+}
+.pjr-grid .pjl-field { margin-bottom: 1.15rem; }
+.pjr-span { grid-column: 1 / -1; }
+
+/* --------------------------- 2. SELECT ------------------------------ */
+/* Matches .pjl-field__row inputs exactly, minus the native arrow, which
+   is replaced by a chevron drawn on the row so it can be recoloured. */
+.pjl-field__row select {
+  flex: 1 1 auto;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  padding: 1rem 2.6rem 1rem 1.05rem;
+  font-family: var(--pjl-sans);
+  font-weight: 300;
+  font-size: .95rem;
+  color: var(--pjl-charcoal);
+  border-radius: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+.pjl-field__row select:focus { outline: none; }
+.pjl-field__row select:invalid,
+.pjl-field__row select option[value=""] { color: var(--pjl-hairline); }
+
+.pjl-field--select .pjl-field__row { position: relative; }
+.pjl-field--select .pjl-field__row::after {
+  content: "";
+  position: absolute;
+  right: 1.1rem;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  margin-top: -5px;
+  border-right: 1px solid var(--pjl-gold-muted);
+  border-bottom: 1px solid var(--pjl-gold-muted);
+  transform: rotate(45deg);
+  pointer-events: none;
+  transition: border-color .3s var(--pjl-ease);
+}
+.pjl-field--select.is-focus .pjl-field__row::after { border-color: var(--pjl-charcoal); }
+
+/* --------------------------- 3. TERMS ------------------------------- */
+/* A .pjl-field wrapper rather than a bare label, so the checkbox gets the
+   same inline error slot as every other control on the form. */
+.pjl-field--terms { margin: .4rem 0 1.5rem; }
+.pjl-field--terms .pjl-check { align-items: flex-start; line-height: 1.55; }
+.pjl-field--terms .pjl-check__box { margin-top: .16rem; }
+.pjl-field--terms.is-invalid .pjl-check__box { border-color: rgba(168, 65, 47, .6); }
+.pjl-field--terms .pjl-field__error { margin-left: 1.6rem; }
+
+/* ------------------------- 4. BENEFITS ------------------------------ */
+.pjr-benefits {
+  margin-top: clamp(2.4rem, 4vw, 3.4rem);
+  padding-top: clamp(1.8rem, 3vw, 2.4rem);
+  border-top: 1px solid var(--pjl-rule-soft);
+}
+.pjr-benefits__title {
+  font-family: var(--pjl-serif);
+  font-weight: 600;
+  font-size: clamp(1.5rem, 2.4vw, 2rem);
+  line-height: 1.15;
+  margin: .6rem 0 .3rem;
+}
+.pjr-benefits__title em { font-style: italic; color: var(--pjl-gold-muted); }
+.pjr-benefits__sub {
+  margin: 0 0 1.3rem;
+  font-family: var(--pjl-sans);
+  font-size: .62rem;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--pjl-faint);
+}
+
+/* Each benefit is a rule-separated line rather than a bulleted list —
+   quieter, and it keeps the editorial rhythm of the rest of the site. */
+.pjr-benefits__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: .9rem;
+}
+.pjr-benefits__list li {
+  display: flex;
+  align-items: flex-start;
+  gap: .8rem;
+  font-family: var(--pjl-sans);
+  font-weight: 300;
+  font-size: .88rem;
+  line-height: 1.65;
+  color: var(--pjl-muted);
+}
+.pjr-benefits__list i {
+  flex: 0 0 auto;
+  margin-top: .22rem;
+  font-size: .9rem;
+  color: var(--pjl-gold-muted);
+}
+
+/* ------------------------- 5. RESPONSIVE ---------------------------- */
+@media (max-width: 1099.98px) {
+  .pjl__split--register { grid-template-columns: 1fr; }
+  .pjl__panel--register { align-items: center; }
+}
+
+@media (max-width: 575.98px) {
+  .pjr-grid { grid-template-columns: 1fr; }
+  .pjr-grid .pjl-field { margin-bottom: 1.25rem; }
+}
